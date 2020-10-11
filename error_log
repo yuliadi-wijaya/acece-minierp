@@ -1,0 +1,5 @@
+[25-Jun-2019 08:00:42 UTC] PHP Fatal error:  Call to a member function row() on boolean in /home/softest8bdtask/public_html/Updatesaleserp/application/models/Accounts_model.php on line 612
+[19-Dec-2019 10:13:57 UTC] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in /home/saleserpnewbdtas/public_html/saleserp_v9.3-demo/index.php on line 315
+[19-Dec-2019 10:14:29 UTC] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in /home/saleserpnewbdtas/public_html/saleserp_v9.3-demo/index.php on line 315
+[19-Dec-2019 10:32:23 UTC] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in /home/saleserpnewbdtas/public_html/saleserp_v9.3-demo/index.php on line 315
+[03-Mar-2020 13:12:17 UTC] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user 'root'@'localhost' (using password: YES) in /home/multistoreleaseb/public_html/saleserp_v9.5/index.php on line 315

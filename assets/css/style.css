@@ -1,0 +1,924 @@
+.category >.nav-tabs > li.active > a {
+  background-color: #3B8104 !important;
+  color: #fff !important;
+  border-radius: 4;
+}
+.category >.nav-tabs > li> a {
+  background-color: #1C93C7 !important;
+  color: #fff !important;
+  border-radius: 4;
+}
+
+.select2-container {
+    width: 100% !important;
+}
+.cat-tabcontent{
+	padding: 20px;
+}
+
+.product-supplier{
+	margin-top: 10px;
+}
+.productbarcode-margin{
+	margin-left: 250px;
+}
+.barcode-toptd{
+	border: 1px solid black ;padding: 5px;
+}
+
+.barcode-innerdiv{
+	font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+	text-align: center; position: relative;
+}
+
+.barcode-productname{
+	text-transform: uppercase;
+	line-height: 10px;
+	font-weight: 600;
+	font-size: 12px;
+	margin-bottom: 3px;
+}
+
+.barcode-modelname{
+	font-weight: 600;
+	 font-size: 8px;
+     position: absolute;
+     top: 0;
+     right: 0;"
+}
+
+.barcode-image{
+	display: block;margin-left: auto;
+	margin-right: auto;height: 60px;
+	width: 143px;
+}
+
+.barcode-productdetails{
+	font-size: 11px;letter-spacing: 0.5px;
+	font-weight: 600;
+	text-transform: uppercase;
+	line-height: 10px;
+}
+.barcode-price{
+	font-weight: 500;
+	line-height: 10px;
+	 margin-top: 5px;
+    font-weight: 500;
+    line-height: 10px;
+    margin-top: 5px;
+}
+
+.barcode-vat{
+	font-weight: 600;
+	font-size: 9px;
+}
+.qrcode-image{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	height:150px
+}
+
+.qrcode-productdetails{
+	font-size: 11px;
+	letter-spacing: 0.5px;
+	font-weight: 600;
+	text-transform: uppercase;
+	line-height: 8px;
+}
+
+.barcode-collaps{
+	border-collapse: collapse;
+}
+ .text-right{
+	text-align: right !important;
+}
+ .text-left{
+	text-align: left !important;
+}
+
+
+
+.print-button{
+	float:right;
+}
+
+#bank_div{
+	display: none;
+}
+
+.purchasedetails-header{
+	border-bottom:2px #333 solid;
+}
+
+.purchasedetails-address{
+	display: inline-block;
+	width: 64%;
+}
+
+.companyname{
+	font-size: 20px;
+}
+
+.usablity{
+	text-align:left;
+	font-size:15px;
+	color: green;
+	font-weight: bold;
+}
+
+.invoice-details-billing{
+	display: inline-block;
+	margin-left: 5px;
+}
+
+.details-address{
+	margin-top:10px;
+	width: 200px;
+}
+
+    #bank_info_hide
+    {
+        display:none;
+    }
+    #payment_from_2
+    {
+        display:none;
+    }
+.hiddenRow {
+  display: none;
+}
+
+.product_field{
+	width: 220px;
+}
+
+.invoice_fields{
+	width: 100px;
+}
+
+.margin-top10{
+	margin-top:10px;
+}
+
+#quotation_service{
+	display: none;
+}
+
+#service_quotation_div{
+	margin-left: 20px;
+}
+
+/*invoice print part*/
+
+
+.print_header{
+	border-bottom:2px #333 solid;
+}
+
+.company-content{
+	display: inline-block;
+	width: 64%;
+}
+
+.img-bottom-m{
+	margin-bottom:10px;
+}
+
+.margin-top10{
+	margin-top:10px;
+}
+
+.company_name_p{
+	font-size: 20px; 
+}
+
+.invoice-address{
+	display: inline-block;
+	margin-left: 5px;
+}
+
+.customer_name_p{
+	margin-top:10px;
+	width: 200px
+}
+
+.c_name{
+	font-size: 20px;
+}
+
+.productdatalineheight{
+	line-height: 0.42857143;
+}
+.inline-block{
+	display: inline-block;
+}
+
+.invoicefooter-content{
+	display: inline-block;
+	width: 66%;
+}
+
+.border-bottom-top{
+	border-top: 0; 
+	border-bottom: 0;
+}
+
+.inv-footer-left{
+	float:left;width:35%;
+	text-align:center;
+	border-top:1px solid #e4e5e7;
+	font-weight: bold;
+}
+
+.inv-footer-right{
+	float:left;width:35%;
+	text-align:right;
+	float: right;
+	border-top:1px solid #e4e5e7;
+	font-weight: bold;
+}
+
+.margin-top50{
+	margin-top: 50px;
+}
+
+.minpos-bordertop{
+	border-top:#333 1px solid;
+}
+.sig_div{
+	margin-top:30px;
+	float:right;width:90%;
+	text-align:center;
+	border-top:1px solid #e4e5e7;
+	font-weight: bold;
+}
+.pthead{
+	font-weight: bold;
+}
+
+.posprint-head{
+	border-bottom:2px #333 solid;
+}
+.posprint-com-info{
+	font-size: 17pt;
+	 font-weight:bold;
+}
+
+.pprint-unit{
+	padding:4px;
+}
+
+/*quotation details css*/
+.marginleft5{
+ margin-left: 5px;
+}
+
+.fl-left{
+	display: flex;
+}
+
+.logo-content{
+	width: 40%;
+	 margin-top: 5px;
+}
+
+.com-content{
+	width: 30%;
+	 margin-top: 5px;
+}
+
+.title-text{
+	border:1px;
+	background-color: #DDE4EB;
+	color:#000;
+}
+
+.desc-div{
+	width: 50%;
+	 margin-left: 30px;
+}
+
+
+/*common Report Header part*/
+
+.print-table-tr{
+	border-bottom:2px #333 solid;
+}
+
+.print-cominfo{
+	border-bottom:2px #333 solid;
+	padding-right: 100px;
+}
+
+.company-txt{
+	font-size: 17pt; font-weight:bold;
+}
+
+
+.fa-folder{
+color:#D4AC0D;
+}
+.fa-folder-open-o{
+color:#D4AC0D;
+}
+
+.navbar .btn-success{
+    margin: 13px 2px;
+}
+.prints{
+    background-color: #3c8dbc;
+    color:#fff;
+}
+
+.phdiv{
+	margin:0;
+	font-family:Arial,Helvetica,sans-serif;
+	border-bottom:1;
+	background-color: #ffffff;
+    color: #000000;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 10pt;
+}
+
+.psigpart{
+	margin-top:10px;
+	float:right;width:30%;
+	text-align:center;border-top:1px solid #e4e5e7;
+}
+
+.print-footercolor{
+	color: #fff;
+}
+
+.ledgrhead{
+	background-color: #7EA48E ;
+	color:#fff;
+}
+
+.prbalance{
+	float: right;
+}
+
+.footersignature{
+	border-top: solid 1px #000;
+}
+
+.signaturetable{
+	margin-top: 50px;
+}
+
+.profilossphead{
+	font-size:20px;
+	 font-weight:bold;
+	 border-right:solid 1px #000; 
+	 border-left:solid 1px #000;
+	  border-top:solid 1px #000;
+	  color: green;
+}
+
+.profitlossbranchead{
+	border-left:solid 1px #000; border-top:solid 1px #000; 
+}
+
+.font-bold{
+	 font-weight:bold;
+}
+
+.profitlossbrancheadamount{
+border-left:solid 1px #000; 
+ border-right:solid 1px #000;
+  border-top:solid 1px #000;
+}
+
+.profitlosstablehead{
+font-size:18px; 
+border-left:solid 1px #000; 
+border-top:solid 1px #000;	
+}
+
+.profitloss-result{
+	background-color: green;
+	color: #fff;
+}
+
+.totalliability{
+	border-style: double;
+    border-left: none;
+    border-right:none;
+    border-top:none;
+}
+
+.cashflowparticular{
+	padding-left:10px; 
+	border:1px solid #000;
+}
+
+.cashflowamount{
+	padding-left:10px;
+	 padding-right:10px; 
+	  border:1px solid #000;
+}
+
+.paddingleft10px{
+	padding-left:10px; 
+}
+
+.cashflowamnt{
+	padding-right:10px; 
+	border-left: solid 1px #000;
+	 border-right:solid 1px #000;
+}
+
+.paddingleftright10{
+	padding-left:10px;
+	 padding-right:10px; 
+}
+
+.totalopeninig{
+	padding-right:10px; 
+	border-top: solid 1px #000; 
+	border-bottom: solid 1px #000;
+}
+
+.padddingwithunderline{
+	padding-left:10px;
+	text-decoration:underline;
+}
+
+.pddingright10{
+	padding-right:10px; 
+}
+
+.noncurcss{
+	padding-right:10px;
+	 border-top:solid 1px #000;
+	  border-bottom: solid 1px #000;
+}
+
+.paddin5ps{
+	padding:5px;
+}
+
+.resumehead{
+	text-align: center; 
+	font-size: 25px;
+}
+
+.rpthtext{
+color:#3D9970;
+font-size: 50px; 
+font-weight: bold;
+font-family: Stencil Std, fantasy;
+font-variant: small-caps
+}
+
+.rptname{
+	color:black;
+	 font-size: 20px; 
+	 font-weight: bold;
+	  font-family:cursive;
+}
+
+.payrolladditiondeduction{
+	text-decoration: underline;font-weight: bold;
+}
+
+.paddingtop30{
+	padding-top:30px;
+}
+
+.padding10{
+	padding:10px;
+}
+
+.bankpayment{
+	width: 100%;
+}
+
+.appsettingqr{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	height:150px;
+}
+
+.appsettingqrtxt{
+	font-weight: bold; 
+	margin-left: 25%;
+}
+
+.playstorelink{
+	border:1px solid #e4e5e7;
+}
+
+     .small-box {
+  border-radius: 2px;
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+.small-box > .inner {
+  padding: 10px;
+}
+.small-box > .small-box-footer {
+  position: relative;
+  text-align: center;
+  padding: 3px 0;
+  color: #fff;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+.small-box > .small-box-footer:hover {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.15);
+}
+.small-box h3 {
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  white-space: nowrap;
+  padding: 0;
+}
+.small-box p {
+  font-size: 15px;
+  color:#fff;
+}
+
+.small-box p > small {
+  display: block;
+  font-size: 13px;
+  margin-top: 5px;
+  color:#fff;
+}
+.small-box h3,
+.small-box p {
+  z-index: 5;
+  color:#fff;
+}
+.small-box .icon {
+  -webkit-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  z-index: 0;
+  font-size: 90px;
+  color: rgba(0, 0, 0, 0.15);
+}
+.small-box:hover {
+  text-decoration: none;
+  color: #f9f9f9;
+}
+.small-box:hover .icon {
+  font-size: 95px;
+}
+@media (max-width: 767px) {
+  .small-box {
+    text-align: center;
+  }
+  .small-box .icon {
+    display: none;
+  }
+
+}
+
+.whitecolor{
+	color:#fff;
+}
+
+.bg-pase{
+	background-color: #6cabbc;
+}
+
+.bg-bringal{
+	background-color:#8459cf;
+}
+
+.bg-darkgreen{
+	background-color:#749057;
+}
+
+.best-sale-title{
+	display: inline-block; 
+	line-height: 34px;
+}
+
+.best-sale-seeall{
+	display: inline-block;
+	 float: right;
+}
+
+.marginpadding-right0{
+	margin-right: 0px;
+	padding-right: 0px;
+}
+
+.marginpaddingleft0{
+	margin-left: 0px;
+	padding-left: 0px;
+}
+
+.filterbutton{
+	background-color: green;
+	color:#fff;
+}
+
+.piechartcontainer{
+	height: 280px; width: 100%;
+}
+
+.charttitle{
+	display: inline-block;
+	 line-height: 34px;
+}
+
+.todayssaletitle{
+	overflow: scroll;
+	 height: 300px;
+}
+
+.altmsg{
+	display: none;
+}
+
+.error{
+	color: red !important;
+}
+
+#rcv_form{
+	margin-top: 250px;
+}
+
+.rcv{
+	background-color: #E3F8E9;
+}
+
+.page-loader-wrapper {
+    z-index: 99999999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: #eee;
+    overflow: hidden;
+    text-align: center
+}
+
+.page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: 700;
+    color: #444
+}
+
+.page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px)
+}
+
+.preloader {
+    display: inline-block;
+    position: relative;
+    width: 50px;
+    height: 50px;
+    -webkit-animation: container-rotate 1568ms linear infinite;
+    animation: container-rotate 1568ms linear infinite
+}
+
+.spinner-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-color: #f44336;
+    -ms-opacity: 1;
+    opacity: 1;
+    -webkit-animation: fill-unfill-rotate 5332ms cubic-bezier(.4, 0, .2, 1) infinite both;
+    animation: fill-unfill-rotate 5332ms cubic-bezier(.4, 0, .2, 1) infinite both
+}
+
+.spinner-layer.pl-green {
+    border-color: #37a000
+}
+
+.spinner-layer.pl-blue {
+    border-color: #3c8dbc
+}
+
+.right {
+    float: right!important
+}
+
+.gap-patch {
+    position: absolute;
+    top: 0;
+    left: 45%;
+    width: 10%;
+    height: 100%;
+    overflow: hidden;
+    border-color: inherit
+}
+
+.gap-patch.circle {
+    width: 1000%;
+    left: -450%
+}
+
+.circle-clipper {
+    display: inline-block;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    border-color: inherit
+}
+
+.circle-clipper .circle {
+    width: 200%;
+    height: 100%;
+    border-width: 3px;
+    border-style: solid;
+    border-color: inherit;
+    border-bottom-color: transparent!important;
+    border-radius: 50%;
+    -webkit-animation: none;
+    animation: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0
+}
+
+.circle-clipper.left .circle {
+    left: 0;
+    border-right-color: transparent!important;
+    -webkit-transform: rotate(129deg);
+    transform: rotate(129deg);
+    -webkit-animation: left-spin 1333ms cubic-bezier(.4, 0, .2, 1) infinite both;
+    animation: left-spin 1333ms cubic-bezier(.4, 0, .2, 1) infinite both
+}
+
+.circle-clipper.right .circle {
+    left: -100%;
+    border-left-color: transparent!important;
+    -webkit-transform: rotate(-129deg);
+    transform: rotate(-129deg);
+    -webkit-animation: right-spin 1333ms cubic-bezier(.4, 0, .2, 1) infinite both;
+    animation: right-spin 1333ms cubic-bezier(.4, 0, .2, 1) infinite both
+}
+
+@-webkit-keyframes container-rotate {
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes container-rotate {
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg)
+    }
+}
+
+@-webkit-keyframes fill-unfill-rotate {
+    12.5% {
+        -webkit-transform: rotate(135deg);
+        transform: rotate(135deg)
+    }
+    25% {
+        -webkit-transform: rotate(270deg);
+        transform: rotate(270deg)
+    }
+    37.5% {
+        -webkit-transform: rotate(405deg);
+        transform: rotate(405deg)
+    }
+    50% {
+        -webkit-transform: rotate(540deg);
+        transform: rotate(540deg)
+    }
+    62.5% {
+        -webkit-transform: rotate(675deg);
+        transform: rotate(675deg)
+    }
+    75% {
+        -webkit-transform: rotate(810deg);
+        transform: rotate(810deg)
+    }
+    87.5% {
+        -webkit-transform: rotate(945deg);
+        transform: rotate(945deg)
+    }
+    to {
+        -webkit-transform: rotate(1080deg);
+        transform: rotate(1080deg)
+    }
+}
+
+@keyframes fill-unfill-rotate {
+    12.5% {
+        -webkit-transform: rotate(135deg);
+        transform: rotate(135deg)
+    }
+    25% {
+        -webkit-transform: rotate(270deg);
+        transform: rotate(270deg)
+    }
+    37.5% {
+        -webkit-transform: rotate(405deg);
+        transform: rotate(405deg)
+    }
+    50% {
+        -webkit-transform: rotate(540deg);
+        transform: rotate(540deg)
+    }
+    62.5% {
+        -webkit-transform: rotate(675deg);
+        transform: rotate(675deg)
+    }
+    75% {
+        -webkit-transform: rotate(810deg);
+        transform: rotate(810deg)
+    }
+    87.5% {
+        -webkit-transform: rotate(945deg);
+        transform: rotate(945deg)
+    }
+    to {
+        -webkit-transform: rotate(1080deg);
+        transform: rotate(1080deg)
+    }
+}
+
+@-webkit-keyframes left-spin {
+    from {
+        -webkit-transform: rotate(130deg);
+        transform: rotate(130deg)
+    }
+    50% {
+        -webkit-transform: rotate(-5deg);
+        transform: rotate(-5deg)
+    }
+    to {
+        -webkit-transform: rotate(130deg);
+        transform: rotate(130deg)
+    }
+}
+
+@keyframes left-spin {
+    from {
+        -webkit-transform: rotate(130deg);
+        transform: rotate(130deg)
+    }
+    50% {
+        -webkit-transform: rotate(-5deg);
+        transform: rotate(-5deg)
+    }
+    to {
+        -webkit-transform: rotate(130deg);
+        transform: rotate(130deg)
+    }
+}
+
+@-webkit-keyframes right-spin {
+    from {
+        -webkit-transform: rotate(-130deg);
+        transform: rotate(-130deg)
+    }
+    50% {
+        -webkit-transform: rotate(5deg);
+        transform: rotate(5deg)
+    }
+    to {
+        -webkit-transform: rotate(-130deg);
+        transform: rotate(-130deg)
+    }
+}
+
+@keyframes right-spin {
+    from {
+        -webkit-transform: rotate(-130deg);
+        transform: rotate(-130deg)
+    }
+    50% {
+        -webkit-transform: rotate(5deg);
+        transform: rotate(5deg)
+    }
+    to {
+        -webkit-transform: rotate(-130deg);
+        transform: rotate(-130deg)
+    }
+}
+
+
+
+
