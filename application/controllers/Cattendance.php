@@ -11,6 +11,7 @@ class Cattendance extends CI_Controller {
         $this->load->model('Hrm_model');
         $this->load->model('Attendance_model');
         $this->load->model('Web_settings');
+        $this->load->model('Site');
         $this->auth->check_admin_auth();
     }
     //Designation form
@@ -218,5 +219,128 @@ class Cattendance extends CI_Controller {
         $data['query'] = $this->Attendance_model->search_intime($date, $start_time, $end_time);
         $content = $this->parser->parse('attendance/Date_time_report', $data, true);
         $this->template->full_admin_html_view($content);
+    }
+
+    public function add_working_hour() {
+        $data['title'] = display('working_hour');
+        $data['sub_title'] = display('add_working_hour');
+        $data['site_list'] = $this->Site->get_site_list();
+        $content = $this->parser->parse('attendance/working_hour_form', $data, true);
+        $this->template->full_admin_html_view($content);
+    }
+
+    public function submit_working_hour() {
+        $this->form_validation->set_rules('site', display('site'), 'required');
+         
+        // if ($this->form_validation->run() === true) {
+        //     $monday_isactive = 0;
+        //     $tuesday_isactive = 0;
+        //     $wednesday_isactive = 0;
+        //     $thursday_isactive = 0;
+        //     $friday_isactive = 0;
+        //     $saturday_isactive = 0;
+        //     $sunday_isactive = 0;
+        //     $holiday_isactive = 0;
+
+        //     if(!empty($this->input->post('monday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+        //     if(!empty($this->input->post('tuesday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+        //     if(!empty($this->input->post('wednesday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+        //     if(!empty($this->input->post('thursday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+        //     if(!empty($this->input->post('friday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+        //     if(!empty($this->input->post('saturday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+        //     if(!empty($this->input->post('sunday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+        //     if(!empty($this->input->post('holiday_isactive'))) {
+        //         $monday_isactive = 1;
+        //     }
+
+        //     $monday = array(
+        //         'site_id' => $this->input->post('site'),
+        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
+        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
+        //         'count' =>  $this->input->post('monday_count'),
+        //         'isactive' =>   $monday_isactive,
+        //     )
+        //     $tuesday = array(
+        //         'site_id' => $this->input->post('site'),
+        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
+        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
+        //         'count' =>  $this->input->post('tuesday_count'),
+        //         'isactive' =>   $tuesday_isactive,
+        //     )
+        //     $wednesday = array(
+        //         'site_id' => $this->input->post('site'),
+        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
+        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
+        //         'count' =>  $this->input->post('wednesday_count'),
+        //         'isactive' =>  $wednesday_isactive,
+        //     )
+        //     $thursday = array(
+        //         'site_id' => $this->input->post('site'),
+        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
+        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
+        //         'count' =>  $this->input->post('thursday_count'),
+        //         'isactive' =>  $thursday_isactive,
+        //     )
+        //     $friday = array(
+        //         'site_id' => $this->input->post('site'),
+        //        'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
+        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
+        //         'count' =>  $this->input->post('friday_count'),
+        //         'isactive' =>  $friday_isactive,
+        //     )
+        //     $saturday = array(
+        //         'site_id' => $this->input->post('site'),
+        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
+        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
+        //         'count' =>  $this->input->post('saturday_count'),
+        //         'isactive' =>  $saturday_isactive,
+        //     )
+        //     $sunday = array(
+        //         'site_id' => $this->input->post('site'),
+        //         'checkin' =>  $this->input->post('sunday_checkin'),
+        //         'checkout' =>  $this->input->post('sunday_checkout'),
+        //         'count' =>  $this->input->post('sunday_count'),
+        //         'isactive' =>  $sunday_isactive,
+        //     )
+        //     $holiday = array(
+        //         'site_id' => $this->input->post('site'),
+        //         'checkin' =>  $this->input->post('holiday_checkin'),
+        //         'checkout' =>  $this->input->post('holiday_checkout'),
+        //         'count' =>  $this->input->post('holiday_count'),
+        //         'isactive' => $holiday_isactive,
+        //     )
+
+        //     $data = array(
+        //         'monday' => $monday,
+        //         'tuesday' => $tuesday,
+        //         'wednesday' => $wednesday,
+        //         'thursday' => $thursday,
+        //         'friday' => $friday,
+        //         'saturday' => $saturday,
+        //         'sunday' => $sunday,
+        //         'holiday' => $holiday,
+        //     )
+
+        //     echo '<pre>';
+        //     print_r($data);
+        //     echo '</pre>';
+        //     die();
+        // }
+
+         redirect("Cattendance/add_working_hour");
     }
 }
