@@ -27,6 +27,16 @@ class Csite extends CI_Controller {
         $this->template->full_admin_html_view($content);
     }
 
+    function get_site_work_hour_detail($site_id){
+        $data = $this->Site->get_site_work_hour_by_id($site_id);
+        $this->template->full_admin_html_view($data);
+        
+    }
+
+    public function update_site_work_hour(){
+
+    }
+
     // submit site data
     public function submit_add_site() {
         $site_id = $this->auth->generator(10);

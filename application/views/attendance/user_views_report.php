@@ -54,36 +54,112 @@
                     <div class="panel-body">
                         <div class="row">
   
-                <table width="100%" class="datatable table table-striped table-bordered table-hover">
+                <table width="100%" class="datatable table table-striped table-bordered table-hover" style="
+                     display: block;
+                     overflow: scroll;
+                     overflow-x: auto;
+                     white-space: nowrap;
+                ">
+                    <?php $end = new DateTime($to_date);
+                            $end = $end->modify( '+1 day' );$period = new DatePeriod(
+                            new DateTime($from_date),
+                            new DateInterval('P1D'),
+                            $end
+                        );$end = $end->modify( '-1 day' );
+                        ?>
                     <caption><center><?php echo display('from').' -'.$from_date.'=>'.display('to').' -'.$to_date?></center></caption>
-                    <thead>
+                    <thead class="thtable">
                         <tr>
                             <th><?php echo display('Sl') ?></th>
                             <th><?php echo display('employee_name') ?></th>
-                            <th><?php echo display('date') ?></th>
-                             <th><?php echo display('sign_in') ?></th>
-                            <th><?php echo display('sign_out') ?></th>
-                             <th><?php echo display('stay') ?></th>
+                            <th><?php echo display('site') ?></th>
+                            <th><?php echo "type" ?></th>
+                            <?php foreach ($period as $p) { 
+                            ?>
+
+                            <th><?php echo date_format($p,"Y-m-d"); ?></th>
+                            
                            
+                            <?php } ?> 
+                            <th><?php echo "sum" ?></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <?php if (!empty($query)) 
-
+                    <tbody class="thtable">
+                    
+                        <?php if (!empty($result)) 
+                            
                         { ?>
 
                             <?php $sl = 1; ?>
-                            <?php foreach ($query as $que) { 
+                            
+                            <?php foreach ($result as $que) { 
                          ?>
                                 <tr class="<?php echo ($sl & 1)?"odd gradeX":"even gradeC" ?>">
-                                    <td><?php echo $sl; ?></td>
-                                    <td><?php echo html_escape($que->first_name).' '.html_escape($que->last_name); ?></td>
-                                    <td><?php echo html_escape($que->date); ?></td>
-                                    <td><?php echo html_escape($que->sign_in); ?></td>
-                                    <td><?php echo html_escape($que->sign_out); ?></td>
-                                    <td><?php echo html_escape($que->staytime); ?></td>
+                                    <td rowspan="4"><?php echo $sl; ?></td>
+                                    <td rowspan="4"><?php echo html_escape(array_values($que)[0]->first_name).' '.html_escape(array_values($que)[0]->last_name); ?></td>
+                                    <td rowspan="4"><?php echo html_escape(array_values($que)[0]->name); ?></td>
+
+                                    <td><?php echo "Basic"; $sum_basic = 0; ?></td>
+                                   
+                                    <?php foreach ($period as $p) { 
+                                        $sum_basic+=$que[date_format($p,"Y-m-d")]->basic ? $que[date_format($p,"Y-m-d")]->basic : 0 ;
+                                     ?>
+                                     <td><?php echo $que[date_format($p,"Y-m-d")]->basic ? $que[date_format($p,"Y-m-d")]->basic : 0; ?></td>
+                                    <?php  if ($p == $end) { ?>
+                                        <td><?php echo $sum_basic  ?></td>
+                                        
+                                        <?php }?> 
+                                    <?php } ?> 
+
                                     
+                                
+                                
                                 </tr>
+
+                                <tr>
+                                <td><?php echo "Meal"; $sum_meal = 0; ?></td>
+                                   
+                                   <?php foreach ($period as $p) { 
+                                       $sum_meal+=$que[date_format($p,"Y-m-d")]->meal ? $que[date_format($p,"Y-m-d")]->meal : 0 ;
+                                    ?>
+                                    <td><?php echo $que[date_format($p,"Y-m-d")]->meal ? $que[date_format($p,"Y-m-d")]->meal : 0; ?></td>
+                                   <?php  if ($p == $end) { ?>
+                                       <td><?php echo $sum_meal  ?></td>
+                                       
+                                       <?php }?> 
+                                   <?php } ?> 
+                                </tr>
+
+                                <tr>
+                                <td><?php echo "OT"; $sum_ot = 0; ?></td>
+                                   
+                                   <?php foreach ($period as $p) { 
+                                       $sum_ot+=$que[date_format($p,"Y-m-d")]->ot ? $que[date_format($p,"Y-m-d")]->ot : 0 ;
+                                    ?>
+                                    <td><?php echo $que[date_format($p,"Y-m-d")]->ot ? $que[date_format($p,"Y-m-d")]->ot : 0; ?></td>
+                                   <?php  if ($p == $end) { ?>
+                                       <td><?php echo $sum_ot  ?></td>
+                                       
+                                       <?php }?> 
+                                   <?php } ?> 
+                                </tr>
+
+                                <tr>
+                                <td><?php echo "Meal2"; $sum_meal2 = 0; ?></td>
+                                   
+                                   <?php foreach ($period as $p) { 
+                                       $sum_meal2+=$que[date_format($p,"Y-m-d")]->meal2 ? $que[date_format($p,"Y-m-d")]->meal2 : 0 ;
+                                    ?>
+                                    <td><?php echo $que[date_format($p,"Y-m-d")]->meal2 ? $que[date_format($p,"Y-m-d")]->meal2 : 0; ?></td>
+                                   <?php  if ($p == $end) { ?>
+                                       <td><?php echo $sum_meal2  ?></td>
+                                       
+                                       <?php }?> 
+                                   <?php } ?> 
+                                </tr>
+
+                                    
+                               
                                 <?php $sl++; ?>
                             <?php } ?> 
                         <?php } ?> 

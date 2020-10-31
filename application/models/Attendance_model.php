@@ -15,7 +15,7 @@ class Attendance_model extends CI_Model {
     //attendance List
     public function attendance_list() {
         $date = date('Y-m-d');
-        $query =$this->db->select("count(DISTINCT(e.att_id)) as att_id,e.*,p.id,p.first_name,p.last_name")->join('employee_history p','e.employee_id = p.id','left')->where('e.date',$date)->group_by('e.att_id')->order_by('e.att_id', 'desc')->get('attendance e');
+        $query =$this->db->select("count(DISTINCT(e.att_id)) as att_id,e.*,p.id,p.first_name,p.last_name,s.name")->join('employee_history p','e.employee_id = p.id','left')->join('site_information s','e.site_id = s.site_id')->where('e.date',$date)->group_by('e.att_id')->order_by('e.att_id', 'desc')->get('attendance e');
 
 
         if ($query->num_rows() > 0) {
@@ -150,8 +150,8 @@ class Attendance_model extends CI_Model {
 
 //datebetween attendance repot
 public function datewiseReport($format_start_date,$format_end_date){
-$this->db->select('e.*,count(DISTINCT(p.id)) as emp_his_id,p.id,p.first_name,p.last_name');
-$this->db->from('attendance e');
+$this->db->select('e.*,count(DISTINCT(p.id)) as emp_his_id,p.id,p.first_name,p.last_name,s.name');
+$this->db->from('attendance e')->join('site_information s','e.site_id = s.site_id');
 $this->db->join('employee_history p','e.employee_id = p.id','left');
 $this->db->where('e.date >=', $format_start_date);
 $this->db->where('e.date <=', $format_end_date);

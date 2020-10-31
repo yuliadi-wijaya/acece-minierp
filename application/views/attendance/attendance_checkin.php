@@ -64,6 +64,12 @@
                             <?php echo form_dropdown('employee_id',$dropdownatn,null,'class="form-control" id="employee_id" required') ?>
                             </div>
                         </div> 
+                        <div class="form-group row">
+                            <label for="employee_id" class="col-sm-3 col-form-label"><?php echo display('site') ?> <span class="text-danger">*</span></label>
+                            <div class="col-sm-9">
+                            <?php echo form_dropdown('site_id',$dropdownsite,null,'class="form-control" id="site_id" required') ?>
+                            </div>
+                        </div> 
                         <div class="form-group row ">
                             <label for="date" class="col-sm-3 col-form-label"><?php echo display('date') ?> <span class="text-danger">*</span></label>
                             <div class="col-sm-9 picker-container">                          

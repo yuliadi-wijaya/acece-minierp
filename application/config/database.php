@@ -7,9 +7,9 @@ $active_record = TRUE;//ci version 2.x
 
 $db['default'] = array(
     'dsn'   => '',
-    'hostname' => 'localhost',
+    'hostname' => '127.0.0.1',
     'username' => 'root',
-    'password' => '',
+    'password' => 'mysql',
     'database' => 'minierp',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',

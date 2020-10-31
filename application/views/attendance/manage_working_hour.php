@@ -51,18 +51,21 @@
 						<div class="panel-title">
 							<h4><?php echo html_escape($sub_title) ?> </h4>
 						</div>
+                       
 					</div>
-					<?php echo form_open_multipart('Cattendance/submit_working_hour',array('class' => 'form-vertical','id' => 'inflow_entry' ))?>
+                    <?php if (!empty($this->session->flashdata($data['site_work_hour']))): ?>
+                        <?php $data_workhour= ($this->session->flashdata($data['site_work_hour']))['data'] ?>
+					<?php echo form_open_multipart('Cattendance/update_edit_working_hour',array('class' => 'form-vertical','id' => 'inflow_entry' ))?>
 					<div class="panel-body">
 						
 						<div class="form-group row">
+                       
 							<label for="phone" class="col-sm-2 col-form-label"><?php echo display('site') ?> <i class="text-danger">*</i></label>
 							<div class="col-sm-10">
 								<select class="form-control" name="site" id="site" tabindex="1">
-                                    <option><?php echo display('select_one')?></option>
-                                    {site_list}
-                                    <option value="{site_id}">{name}</option>
-                                    {/site_list}
+                                   
+                                <option value="<?php echo $data_workhour[0]['site_id'];?>"><?php echo $data_workhour[0]['name'];?></option>
+                                   
                                 </select>
 							</div>
 						</div>
@@ -83,68 +86,102 @@
                                         <td>Monday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="monday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="monday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="monday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="monday_isactive"  checked> Active</td>
+                                        <td><input type="text" class="form-control" name="monday_count" value="<?php echo $data_workhour[0]['count'] ?>"  tabindex="4"/></td>
+                                        <td><input type="checkbox" name="monday_isactive" <?php echo $data_workhour[0]['is_active'] == "1" ? "checked value='1'" : "value='0'";?> >  Active</td>
                                     </tr>
                                     <tr>
                                         <td>Tuesday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="tuesday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="tuesday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="tuesday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="tuesday_isactive"  checked> Active</td>
+                                        <td><input type="text" class="form-control" name="tuesday_count" value="<?php echo $data_workhour[1]['count'] ?>" tabindex="4"/></td>
+                                        <td><input type="checkbox" name="tuesday_isactive" <?php echo $data_workhour[1]['is_active'] == "1" ? "checked value='1'" : "value='0'";?> > Active</td>
                                     </tr>
                                     <tr>
                                         <td>Wednesday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="wednesday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="wednesday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="wednesday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="wednesday_isactive"  checked> Active</td>
+                                        <td><input type="text" class="form-control" name="wednesday_count" value="<?php echo $data_workhour[2]['count'] ?>" tabindex="4"/></td>
+                                        <td><input type="checkbox" name="wednesday_isactive" <?php echo $data_workhour[2]['is_active'] == "1" ? "checked value='1'" : "value='0'";?>  > Active</td>
                                     </tr>
                                     <tr>
                                         <td>Thursday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="thursday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="thursday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="thursday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="thursday_isactive"  checked> Active</td>
+                                        <td><input type="text" class="form-control" name="thursday_count" value="<?php echo $data_workhour[3]['count'] ?>" tabindex="4"/></td>
+                                        <td><input type="checkbox" name="thursday_isactive" <?php echo $data_workhour[3]['is_active'] == "1" ? "checked value='1'" : "value='0'";?>  > Active</td>
                                     </tr>
                                     <tr>
                                         <td>Friday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="friday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="friday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="friday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="friday_isactive" checked> Active</td>
+                                        <td><input type="text" class="form-control" name="friday_count" value="<?php echo $data_workhour[4]['count'] ?>" tabindex="4"/></td>
+                                        <td><input type="checkbox" name="friday_isactive" <?php echo $data_workhour[4]['is_active'] == "1" ? "checked value='1'" : "value='0'";?> > Active</td>
                                     </tr>
                                     <tr>
                                         <td>Saturday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="saturday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="saturday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="saturday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="saturday_isactive" > Active</td>
+                                        <td><input type="text" class="form-control" name="saturday_count" value="<?php echo $data_workhour[5]['count'] ?>" tabindex="4"/></td>
+                                        <td><input type="checkbox" name="saturday_isactive" <?php echo $data_workhour[5]['is_active'] == "1" ? "checked value='1'" : "value='0'";?> > Active</td>
                                     </tr>
                                     <tr style="background-color: #dd4b39; color:#fff;">
                                         <td>Sunday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="sunday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="sunday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="sunday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="sunday_isactive"> Active</td>
+                                        <td><input type="text" class="form-control" name="sunday_count" value="<?php echo $data_workhour[6]['count'] ?>" tabindex="4"/></td>
+                                        <td><input type="checkbox" name="sunday_isactive" <?php echo $data_workhour[6]['is_active'] == "1" ? "checked value='1'" : "value='0'";?> > Active</td>
                                     </tr>
                                     <tr style="background-color: #dd4b39; color:#fff;">
                                         <td>Holiday</td>
                                         <td><input type="text" id="timepicker-12-hr" name="holiday_checkin" class="form-control timepicker-12-hr"></td>
                                         <td><input type="text" id="timepicker-12-hr" name="holiday_checkout" class="form-control timepicker-12-hr"></td>
-                                        <td><input type="text" class="form-control" name="holiday_count" tabindex="4"/></td>
-                                        <td><input type="checkbox" name="holiday_isactive"> Active</td>
+                                        <td><input type="text" class="form-control" name="holiday_count" value="<?php echo $data_workhour[7]['count'] ?>" tabindex="4"/></td>
+                                        <td><input type="checkbox" name="holiday_isactive" <?php echo $data_workhour[7]['is_active'] == "1" ? "checked value='1'" : "value='0'";?> > Active</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 					</div>
+
+
+                  
 					<div class="panel-footer">
 						<div class="form-group" style="margin-bottom:0%">
 							<button type="submit" class="btn btn-success w-md m-b-5"><?php echo display('save') ?></button>
 							<button type="reset" class="btn btn-warning w-md m-b-5"><?php echo display('reset') ?></button>
 						</div>
 					</div>
+
+                    <?php
+                            else: ?>
+                    <?php echo form_open_multipart('Cattendance/get_data_working_hour',array('class' => 'form-vertical','id' => 'inflow_entry' ))?>
+					<?php echo $data?>
+                    <div class="panel-body">
+						
+						<div class="form-group row">
+							<label for="phone" class="col-sm-2 col-form-label"><?php echo display('site') ?> <i class="text-danger">*</i></label>
+							<div class="col-sm-10">
+								<select class="form-control" name="site" id="site" tabindex="1">
+                                    <option><?php echo display('select_one')?></option>
+                                    {site_list}
+                                    <option value="{site_id}">{name}</option>
+                                    {/site_list}
+                                </select>
+                             
+							</div>
+						</div>
+
+                        
+					</div>
+                    <div class="panel-footer">
+						<div class="form-group" style="margin-bottom:0%">
+							<button type="submit" class="btn btn-success w-md m-b-5">Edit</button>
+							
+						</div>
+					</div>
+                    <?php
+                            endif; ?>
+
 					<?php echo form_close()?>
 				</div>
 			</div>

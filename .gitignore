@@ -16,3 +16,5 @@ application/logs/*
 !application/logs/.htaccess
 /vendor/
 application/ci_sessions
+
+application/config/database.php
