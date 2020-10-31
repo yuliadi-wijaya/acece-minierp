@@ -70,6 +70,7 @@
                                         <th><?php echo display('checkin') ?></th>
                                         <th><?php echo display('checkout') ?></th>
                                         <th><?php echo display('stay') ?></th>
+                                        <th><?php echo display('site') ?></th>
                                         <th style='width:75px'><?php echo display('action') ?></th>
                                     </tr>
                                 </thead>
@@ -86,7 +87,7 @@
                                             <td><?php echo html_escape($row['sign_in']); ?></td>
                                             <td><?php echo html_escape($row['sign_out']); ?></td>
                                             <td><?php echo html_escape($row['staytime']); ?></td>
-                                            
+                                            <td><?php echo html_escape($row['name']); ?></td>
                                             <td> 
                                                 <?php if ($row['staytime'] == '') {  $id = $row["att_id"];?>
                                                 <a href='<?php echo base_url("Cattendance/checkout/" . $id) ?>' class='btn btn-success btn-sm'><i class='fa fa-clock-o' aria-hidden='true'></i> <?php echo display('checkout') ?></a>
@@ -125,11 +126,12 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <input type="submit" id="add-product" class="btn btn-success w-md m-b-5" name="add-product" value="<?php echo display('submit') ?>" />
+
                                             <?php echo form_close() ?>
                                         </div>
                                         <div class="panel-footer">
                                             <div class="form-group text-left" style="margin-bottom:0%">
-                                                <input type="submit" id="add-product" class="btn btn-success w-md m-b-5" name="add-product" value="<?php echo display('submit') ?>" />
                                                 <button type="button" class="btn btn-danger w-md m-b-5" data-dismiss="modal">Close</button>
                                                 <a href="<?php echo base_url('assets/data/csv/attendance_csv_sample.csv') ?>" class="btn btn-primary w-md m-b-5"><i class="fa fa-download"></i><?php echo display('download_sample_file') ?> </a>
                                             </div>

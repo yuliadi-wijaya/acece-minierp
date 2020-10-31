@@ -74,6 +74,7 @@
                                         <th><?php echo display('check_in') ?></th>
                                         <th><?php echo display('checkout') ?></th>
                                         <th><?php echo display('stay') ?></th>
+                                        <th><?php echo display('site') ?></th>
                                         
                                     </tr>
                                 </thead>
@@ -91,6 +92,7 @@
                                                 <td><?php echo html_escape($row['sign_in']); ?></td>
                                                 <td><?php echo html_escape($row['sign_out']); ?></td>
                                                 <td><?php echo html_escape($row['staytime']); ?></td>
+                                                <td><?php echo html_escape($row['name']); ?></td>
                                             
                                             </tr>
                                             <?php $sl++; ?>

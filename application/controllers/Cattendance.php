@@ -10,6 +10,7 @@ class Cattendance extends CI_Controller {
         $this->load->library('lattendance');
         $this->load->model('Hrm_model');
         $this->load->model('Attendance_model');
+        $this->load->model('Workhour_model');
         $this->load->model('Web_settings');
         $this->load->model('Site');
         $this->auth->check_admin_auth();
@@ -27,6 +28,7 @@ class Cattendance extends CI_Controller {
         $data['title'] = display('attendance');
         $data['sub_title'] = display('checkin');
         $data['dropdownatn'] = $this->Attendance_model->employee_list();
+        $data['dropdownsite'] = $this->Site->get_site_list_dropdown();
         $content = $this->parser->parse('attendance/attendance_checkin', $data, true);
         $this->template->full_admin_html_view($content);
     }
@@ -51,7 +53,7 @@ class Cattendance extends CI_Controller {
         }
         #-------------------------------#
         if ($this->form_validation->run() === true) {
-            $postData = ['employee_id' => $this->input->post('employee_id', true), 'date' => $date, 'sign_in' => $inputintime, ];
+            $postData = ['employee_id' => $this->input->post('employee_id', true), 'date' => $date, 'sign_in' => $inputintime, 'site_id' => $this->input->post('site_id', true)];
             if ($this->Attendance_model->atten_create($postData)) {
                 $this->session->set_flashdata('message', display('save_successfully'));
             } else {
@@ -146,29 +148,36 @@ class Cattendance extends CI_Controller {
         $count = 0;
         $fp = fopen($_FILES['upload_csv_file']['tmp_name'], 'r') or die("can't open file");
         if (($handle = fopen($_FILES['upload_csv_file']['tmp_name'], 'r')) !== FALSE) {
-            while ($csv_line = fgetcsv($fp, 1024)) {
+            
+            $flag = true;
+            $data= array();
+            while ($csv_line = fgetcsv($fp, 10000, ",")) {
                 //keep this if condition if you want to remove the first row
+                if($flag) { $flag = false; continue; }
                 for ($i = 0, $j = count($csv_line);$i < $j;$i++) {
                     $insert_csv = array();
                     $insert_csv['employee_id'] = (!empty($csv_line[0]) ? $csv_line[0] : null);
                     $insert_csv['date'] = (!empty($csv_line[1]) ? $csv_line[1] : null);
                     $insert_csv['sign_in'] = (!empty($csv_line[2]) ? $csv_line[2] : null);
                     $insert_csv['sign_out'] = (!empty($csv_line[3]) ? $csv_line[3] : null);
-                    $insert_csv['staytime'] = (!empty($csv_line[4]) ? $csv_line[4] : null);
+                    $insert_csv['site_id'] = (!empty($csv_line[4]) ? $csv_line[4] : null);
                 }
                 $date = date("Y-m-d", strtotime($insert_csv['date']));
-                $sign_out = date("h:i:s a", strtotime($insert_csv['sign_out']));
-                $sign_in = date("h:i:s a", strtotime($insert_csv['sign_in']));
+                $sign_out = date("h:i a", strtotime($insert_csv['sign_out']));
+                $sign_in = date("h:i a", strtotime($insert_csv['sign_in']));
                 $in = new DateTime($sign_in);
                 $Out = new DateTime($sign_out);
                 $interval = $in->diff($Out);
-                $stay = $interval->format('%H:%I:%S');
-                $attendancedata = array('employee_id' => $insert_csv['employee_id'], 'date' => $date, 'sign_in' => $sign_in, 'sign_out' => $sign_out, 'staytime' => $stay,);
-                if ($count > 0) {
-                    $this->db->insert('attendance', $attendancedata);
-                }
-                $count++;
+                $stay = $interval->format('%H:%I');
+                $attendancedata = array('employee_id' => $insert_csv['employee_id'], 'date' => $date, 'sign_in' => $sign_in, 'sign_out' => $sign_out, 'staytime' => $stay, 'site_id' => $insert_csv['site_id'],);
+                
+                array_push($data,$attendancedata);
+                   
+                
             }
+            
+            $this->db->insert_batch('attendance', $data);
+            
         }
         $this->session->set_userdata(array('message' => display('successfully_added')));
         redirect(base_url('Cattendance/manage_attendance'));
@@ -189,7 +198,60 @@ class Cattendance extends CI_Controller {
         $format_end_date = $this->input->post('end_date', true);
         $data['from_date'] = $format_start_date;
         $data['to_date'] = $format_end_date;
+        $data['site'] = $this->Workhour_model->work_hour_list();
+        $mapData = array();
+        
+        //Map with key site_id and day , format id_day
+        foreach( $data['site'] as $d) {
+            $mapData[$d['site_id']."_".$d['day']] = $d;
+        }
+
         $data['query'] = $this->Attendance_model->datewiseReport($format_start_date, $format_end_date);
+        // TODO Process Data
+
+        echo "<pre>";
+        // print_r( $mapData);
+        $data['result']=array();
+        foreach ($data['query'] as $d) {
+
+            $d->day = date('N', strtotime($d->date));
+            if (DateTime::createFromFormat('H : i A',$mapData[$d->site_id."_".$d->day]['sign_in']) > DateTime::createFromFormat('H:i a',$d->sign_in) && $mapData[$d->site_id."_".$d->day]['is_active'] == 1) {
+                if (DateTime::createFromFormat('H : i A',$mapData[$d->site_id."_".$d->day]['sign_out']) < DateTime::createFromFormat('H:i a',$d->sign_out)) {
+                    $d->basic = 1;
+                    $d->meal=1;
+                    $timestamp1 = DateTime::createFromFormat('H:i a',$d->sign_out);
+                    $timestamp2 = DateTime::createFromFormat('H : i A',$mapData[$d->site_id."_".$d->day]['sign_out']); 
+                    $ot = floor(abs($timestamp2->getTimestamp() - $timestamp1->getTimestamp())/(60*60));
+                    if ($ot > 0) {
+                        $d->ot=$ot;
+                        //Meal 2 ???
+                    } else {
+                        $d->ot=0;
+                        
+                    }
+                    $d->meal2=0;
+                } else {
+                    $d->basic = 0;
+                    $d->meal=0;
+                    $d->ot=0;
+                    $d->meal2=0;
+                }
+            } else {
+                $d->basic = 0;
+                $d->meal=0;
+                $d->ot=0;
+                $d->meal2=0;
+            };
+
+           
+            $data['result'][$d->employee_id][$d->date] = $d;
+            
+           
+
+        }
+        print_r($data['result']);
+        echo "</pre>";
+        // die();
         $content = $this->parser->parse('attendance/user_views_report', $data, true);
         $this->template->full_admin_html_view($content);
     }
@@ -229,117 +291,294 @@ class Cattendance extends CI_Controller {
         $this->template->full_admin_html_view($content);
     }
 
+    public function manage_working_hour() {
+        $data['title'] = display('working_hour');
+        $data['sub_title'] = display('manage_working_hour');
+        $data['site_list'] = $this->Site->get_site_list_has_working_hour();
+        $content = $this->parser->parse('attendance/manage_working_hour', $data, true);
+        $this->template->full_admin_html_view($content);
+    }
+
+    public function get_data_working_hour() {
+        $data['title'] = display('working_hour');
+        $data['sub_title'] = display('manage_working_hour');
+        $data['site_list'] = $this->Site->get_site_list_has_working_hour();
+        $site_id = $this->input->post('site', true);
+       
+        if ($site_id == "Select One") {
+            
+            $this->session->set_flashdata('error_message', display('please_try_again'));
+           
+            redirect("Cattendance/manage_working_hour");
+        } else {
+            // Get detail working
+            $data['sub_title'] = display('manage_working_hour');
+            $data['site_list'] = $this->Site->get_site_list_has_working_hour();
+            $data['site_work_hour'] = $this->Site->get_site_work_hour_by_id($site_id);
+            $this->session->set_flashdata('data', $data['site_work_hour']);
+            
+            redirect("Cattendance/manage_working_hour");
+        }
+    }
+
+    public function update_edit_working_hour(){
+        $this->form_validation->set_rules('site', display('site'), 'required');
+        
+        $monday = array(
+            'day' => 1,
+            'site_id' => $this->input->post('site'),
+            'sign_in' =>  $this->input->post('monday_checkin', true),
+            'sign_out' =>  $this->input->post('monday_checkout', true),
+            'count' =>  empty($this->input->post('monday_count')) ? 0 :$this->input->post('monday_count'),
+            'is_active' =>   empty($this->input->post('monday_isactive')) ? 0 : 1
+         );
+         if( DateTime::createFromFormat('H : i A',$monday['sign_in']) >= DateTime::createFromFormat('H : i A',$monday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $tuesday = array(
+            'day' => 2,
+            'site_id' => $this->input->post('site'),
+            'sign_in' =>  $this->input->post('tuesday_checkin', true),
+            'sign_out' =>  $this->input->post('tuesday_checkout', true),
+            'count' =>  empty($this->input->post('tuesday_count')) ? 0 :$this->input->post('tuesday_count') ,
+            'is_active' =>   empty($this->input->post('tuesday_isactive')) ? 0 : 1
+        );
+        if( DateTime::createFromFormat('H : i A',$tuesday['sign_in']) >= DateTime::createFromFormat('H : i A',$tuesday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $wednesday = array(
+            'day' => 3,
+            'site_id' => $this->input->post('site'),
+            'sign_in' =>  $this->input->post('wednesday_checkin', true),
+            'sign_out' => $this->input->post('wednesday_checkout', true),
+            'count' =>  empty($this->input->post('wednesday_count')) ? 0 :$this->input->post('wednesday_count'),
+            'is_active' =>  empty($this->input->post('wednesday_isactive')) ? 0 : 1
+        );
+        if( DateTime::createFromFormat('H : i A',$wednesday['sign_in']) >= DateTime::createFromFormat('H : i A',$wednesday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $thursday = array(
+            'day' => 4,
+            'site_id' => $this->input->post('site'),
+            'sign_in' => $this->input->post('thursday_checkin', true),
+            'sign_out' =>  $this->input->post('thursday_checkout', true),
+            'count' =>  empty($this->input->post('thursday_count')) ? 0 :$this->input->post('thursday_count'),
+            'is_active' =>  empty($this->input->post('thursday_isactive')) ? 0 : 1
+        );
+        if( DateTime::createFromFormat('H : i A',$thursday['sign_in']) >= DateTime::createFromFormat('H : i A',$thursday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $friday = array(
+            'day' => 5,
+            'site_id' => $this->input->post('site'),
+           'sign_in' =>  $this->input->post('friday_checkin', true),
+            'sign_out' => $this->input->post('friday_checkout', true),
+            'count' =>  empty($this->input->post('friday_count')) ? 0 :$this->input->post('friday_count'),
+            'is_active' =>  empty($this->input->post('friday_isactive')) ? 0 : 1
+        );
+        if( DateTime::createFromFormat('H : i A',$friday['sign_in']) >= DateTime::createFromFormat('H : i A',$friday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $saturday = array(
+            'day' => 6,
+            'site_id' => $this->input->post('site'),
+            'sign_in' =>  $this->input->post('saturday_checkin', true),
+            'sign_out' =>  $this->input->post('saturday_checkout', true),
+            'count' =>  empty($this->input->post('saturday_count')) ? 0 :$this->input->post('saturday_count'),
+            'is_active' =>  empty($this->input->post('saturday_isactive')) ? 0 : 1
+        );
+        if( DateTime::createFromFormat('H : i A',$saturday['sign_in']) >= DateTime::createFromFormat('H : i A',$saturday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $sunday = array(
+            'day' => 7,
+            'site_id' => $this->input->post('site'),
+            'sign_in' =>  $this->input->post('sunday_checkin'),
+            'sign_out' =>  $this->input->post('sunday_checkout'),
+            'count' =>  empty($this->input->post('sunday_count')) ? 0 :$this->input->post('sunday_count'),
+            'is_active' =>  empty($this->input->post('sunday_isactive')) ? 0 : 1
+        );
+        if( DateTime::createFromFormat('H : i A',$sunday['sign_in']) >= DateTime::createFromFormat('H : i A',$sunday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $holiday = array(
+            'day' => 8,
+            'site_id' => $this->input->post('site'),
+            'sign_in' =>  $this->input->post('holiday_checkin'),
+            'sign_out' =>  $this->input->post('holiday_checkout'),
+            'count' =>  empty($this->input->post('holiday_count')) ? 0 :$this->input->post('holiday_count'),
+            'is_active' => empty($this->input->post('holiday_isactive')) ? 0 : 1
+        );
+        if( DateTime::createFromFormat('H : i A',$holiday['sign_in']) >= DateTime::createFromFormat('H : i A',$holiday['sign_out'])){
+            $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+            redirect("Cattendance/manage_working_hour");
+         }
+        $data = array(
+            $monday,
+            $tuesday,
+            $wednesday,
+            $thursday,
+            $friday,
+            $saturday,
+            $sunday,
+            $holiday
+        );
+
+       
+
+        $update = $this->Workhour_model->update_workhour_balk($data) ;
+       
+            if ($update) {
+                $this->session->set_flashdata('message', display('update_successfully'));
+            } else {
+                $this->session->set_flashdata('error_message', display('please_try_again'));
+            }
+
+       
+        redirect("Cattendance/add_working_hour");
+    }
+
+    
+
     public function submit_working_hour() {
         $this->form_validation->set_rules('site', display('site'), 'required');
-         
-        // if ($this->form_validation->run() === true) {
-        //     $monday_isactive = 0;
-        //     $tuesday_isactive = 0;
-        //     $wednesday_isactive = 0;
-        //     $thursday_isactive = 0;
-        //     $friday_isactive = 0;
-        //     $saturday_isactive = 0;
-        //     $sunday_isactive = 0;
-        //     $holiday_isactive = 0;
 
-        //     if(!empty($this->input->post('monday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
-        //     if(!empty($this->input->post('tuesday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
-        //     if(!empty($this->input->post('wednesday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
-        //     if(!empty($this->input->post('thursday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
-        //     if(!empty($this->input->post('friday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
-        //     if(!empty($this->input->post('saturday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
-        //     if(!empty($this->input->post('sunday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
-        //     if(!empty($this->input->post('holiday_isactive'))) {
-        //         $monday_isactive = 1;
-        //     }
+        // Validate site_id already have working hour or not
 
-        //     $monday = array(
-        //         'site_id' => $this->input->post('site'),
-        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
-        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
-        //         'count' =>  $this->input->post('monday_count'),
-        //         'isactive' =>   $monday_isactive,
-        //     )
-        //     $tuesday = array(
-        //         'site_id' => $this->input->post('site'),
-        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
-        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
-        //         'count' =>  $this->input->post('tuesday_count'),
-        //         'isactive' =>   $tuesday_isactive,
-        //     )
-        //     $wednesday = array(
-        //         'site_id' => $this->input->post('site'),
-        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
-        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
-        //         'count' =>  $this->input->post('wednesday_count'),
-        //         'isactive' =>  $wednesday_isactive,
-        //     )
-        //     $thursday = array(
-        //         'site_id' => $this->input->post('site'),
-        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
-        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
-        //         'count' =>  $this->input->post('thursday_count'),
-        //         'isactive' =>  $thursday_isactive,
-        //     )
-        //     $friday = array(
-        //         'site_id' => $this->input->post('site'),
-        //        'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
-        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
-        //         'count' =>  $this->input->post('friday_count'),
-        //         'isactive' =>  $friday_isactive,
-        //     )
-        //     $saturday = array(
-        //         'site_id' => $this->input->post('site'),
-        //         'checkin' =>  date("h:i a", strtotime($this->input->post('monday_checkin', true))),
-        //         'checkout' =>  date("h:i a", strtotime($this->input->post('monday_checkout', true))),
-        //         'count' =>  $this->input->post('saturday_count'),
-        //         'isactive' =>  $saturday_isactive,
-        //     )
-        //     $sunday = array(
-        //         'site_id' => $this->input->post('site'),
-        //         'checkin' =>  $this->input->post('sunday_checkin'),
-        //         'checkout' =>  $this->input->post('sunday_checkout'),
-        //         'count' =>  $this->input->post('sunday_count'),
-        //         'isactive' =>  $sunday_isactive,
-        //     )
-        //     $holiday = array(
-        //         'site_id' => $this->input->post('site'),
-        //         'checkin' =>  $this->input->post('holiday_checkin'),
-        //         'checkout' =>  $this->input->post('holiday_checkout'),
-        //         'count' =>  $this->input->post('holiday_count'),
-        //         'isactive' => $holiday_isactive,
-        //     )
+        $working_data = $this->Workhour_model->work_hour_list_by_site_id($this->input->post('site'));
+        if ($working_data) {
+            $this->session->set_flashdata('error_message', display('already_exist'));
+            redirect("Cattendance/add_working_hour");
+        } else {
+            
+            // Insert All data
+            //TODO check sign_in and sign_out data
+            
+             $monday = array(
+                'day' => 1,
+                'site_id' => $this->input->post('site'),
+                'sign_in' =>  $this->input->post('monday_checkin', true),
+                'sign_out' =>  $this->input->post('monday_checkout', true),
+                'count' =>  empty($this->input->post('monday_count')) ? 0 :$this->input->post('monday_count'),
+                'is_active' =>   empty($this->input->post('monday_isactive')) ? 0 : 1
+             );
+             if( DateTime::createFromFormat('H : i A',$monday['sign_in']) >= DateTime::createFromFormat('H : i A',$monday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            $tuesday = array(
+                'day' => 2,
+                'site_id' => $this->input->post('site'),
+                'sign_in' =>  $this->input->post('tuesday_checkin', true),
+                'sign_out' =>  $this->input->post('tuesday_checkout', true),
+                'count' =>  empty($this->input->post('tuesday_count')) ? 0 :$this->input->post('tuesday_count') ,
+                'is_active' =>   empty($this->input->post('tuesday_isactive')) ? 0 : 1
+            );
+            if( DateTime::createFromFormat('H : i A',$tuesday['sign_in']) >= DateTime::createFromFormat('H : i A',$tuesday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            $wednesday = array(
+                'day' => 3,
+                'site_id' => $this->input->post('site'),
+                'sign_in' =>  $this->input->post('wednesday_checkin', true),
+                'sign_out' => $this->input->post('wednesday_checkout', true),
+                'count' =>  empty($this->input->post('wednesday_count')) ? 0 :$this->input->post('wednesday_count'),
+                'is_active' =>  empty($this->input->post('wednesday_isactive')) ? 0 : 1
+            );
+            if( DateTime::createFromFormat('H : i A',$wednesday['sign_in']) >= DateTime::createFromFormat('H : i A',$wednesday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            $thursday = array(
+                'day' => 4,
+                'site_id' => $this->input->post('site'),
+                'sign_in' => $this->input->post('thursday_checkin', true),
+                'sign_out' =>  $this->input->post('thursday_checkout', true),
+                'count' =>  empty($this->input->post('thursday_count')) ? 0 :$this->input->post('thursday_count'),
+                'is_active' =>  empty($this->input->post('thursday_isactive')) ? 0 : 1
+            );
+            if( DateTime::createFromFormat('H : i A',$thursday['sign_in']) >= DateTime::createFromFormat('H : i A',$thursday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            $friday = array(
+                'day' => 5,
+                'site_id' => $this->input->post('site'),
+               'sign_in' =>  $this->input->post('friday_checkin', true),
+                'sign_out' => $this->input->post('friday_checkout', true),
+                'count' =>  empty($this->input->post('friday_count')) ? 0 :$this->input->post('friday_count'),
+                'is_active' =>  empty($this->input->post('friday_isactive')) ? 0 : 1
+            );
+            if( DateTime::createFromFormat('H : i A',$friday['sign_in']) >= DateTime::createFromFormat('H : i A',$friday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            $saturday = array(
+                'day' => 6,
+                'site_id' => $this->input->post('site'),
+                'sign_in' =>  $this->input->post('saturday_checkin', true),
+                'sign_out' =>  $this->input->post('saturday_checkout', true),
+                'count' =>  empty($this->input->post('saturday_count')) ? 0 :$this->input->post('saturday_count'),
+                'is_active' =>  empty($this->input->post('saturday_isactive')) ? 0 : 1
+            );
+            if( DateTime::createFromFormat('H : i A',$saturday['sign_in']) >= DateTime::createFromFormat('H : i A',$saturday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            $sunday = array(
+                'day' => 7,
+                'site_id' => $this->input->post('site'),
+                'sign_in' =>  $this->input->post('sunday_checkin'),
+                'sign_out' =>  $this->input->post('sunday_checkout'),
+                'count' =>  empty($this->input->post('sunday_count')) ? 0 :$this->input->post('sunday_count'),
+                'is_active' =>  empty($this->input->post('sunday_isactive')) ? 0 : 1
+            );
+            if( DateTime::createFromFormat('H : i A',$sunday['sign_in']) >= DateTime::createFromFormat('H : i A',$sunday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            $holiday = array(
+                'day' => 8,
+                'site_id' => $this->input->post('site'),
+                'sign_in' =>  $this->input->post('holiday_checkin'),
+                'sign_out' =>  $this->input->post('holiday_checkout'),
+                'count' =>  empty($this->input->post('holiday_count')) ? 0 :$this->input->post('holiday_count'),
+                'is_active' => empty($this->input->post('holiday_isactive')) ? 0 : 1
+            );
+            if( DateTime::createFromFormat('H : i A',$holiday['sign_in']) >= DateTime::createFromFormat('H : i A',$holiday['sign_out'])){
+                $this->session->set_flashdata('error_message', 'Sign Out Time Cannot Earlier than Sign In Time');
+                redirect("Cattendance/add_working_hour");
+             }
+            
 
-        //     $data = array(
-        //         'monday' => $monday,
-        //         'tuesday' => $tuesday,
-        //         'wednesday' => $wednesday,
-        //         'thursday' => $thursday,
-        //         'friday' => $friday,
-        //         'saturday' => $saturday,
-        //         'sunday' => $sunday,
-        //         'holiday' => $holiday,
-        //     )
+            $data = array(
+                $monday,
+                $tuesday,
+                $wednesday,
+                $thursday,
+                $friday,
+                $saturday,
+                $sunday,
+                $holiday
+            );
+            $error_create = $this->Workhour_model->workhour_create($data) ;
+            if ($error_create) {
+                $this->session->set_flashdata('message', display('save_successfully'));
+            } else {
+                $this->session->set_flashdata('error_message', display('please_try_again'));
+            }
 
-        //     echo '<pre>';
-        //     print_r($data);
-        //     echo '</pre>';
-        //     die();
-        // }
+            redirect("Cattendance/add_working_hour");
+
+        };
 
          redirect("Cattendance/add_working_hour");
     }

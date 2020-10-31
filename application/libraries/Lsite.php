@@ -12,7 +12,7 @@ class Lsite {
 
         $data = array(
             'title' => display('site'),
-            'sub_title' => display('add_site')
+            'sub_title' => display('add_site'),
         );
         $content = $CI->parser->parse('site/site_form', $data, true);
         return $content;
@@ -44,6 +44,8 @@ class Lsite {
             'name'          => $site['name'],
             'description'   => $site['description'],
             'address'       => $site['address'],
+            'sign_in_standard' => $site['sign_in_standard'],
+            'sign_out_standard' => $site['sign_out_standard'],
         );
 
         $content = $CI->parser->parse('site/site_update_form', $data, true);
