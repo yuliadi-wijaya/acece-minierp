@@ -9,6 +9,7 @@ class Cpayroll extends CI_Controller {
         $this->load->library('session');
         $this->load->library('lpayroll');
         $this->load->library('numbertowords');
+        $this->load->model('Site');
         $this->load->model('Payroll_model');
         $this->auth->check_admin_auth();
     }
@@ -76,6 +77,7 @@ class Cpayroll extends CI_Controller {
         $data['slname'] = $this->Payroll_model->salary_typeName();
         $data['sldname'] = $this->Payroll_model->salary_typedName();
         $data['employee'] = $this->Payroll_model->empdropdown();
+        $data['site'] = $this->Payroll_model->sitedropdown();
         $content = $this->parser->parse('payroll/salary_setup_form', $data, true);
         $this->template->full_admin_html_view($content);
     }
@@ -131,6 +133,32 @@ class Cpayroll extends CI_Controller {
             redirect("Cpayroll/salary_setup_form");
         }
     }
+
+    //Create Salary Persite
+    public function site_salary_setup_entry(){
+        $date = date('Y-m-d');
+        $check_exist = $this->Payroll_model->check_exist_site_salary($this->input->post('site_id', true));
+
+        if ($check_exist == 0) {
+            $amount = $this->input->post('amount', TRUE);
+            $hrate = $this->input->post('basic', TRUE);
+           
+            foreach ($amount as $key => $value) {
+                $postData = ['site_id' => $this->input->post('site_id', true), 'sal_type' => $this->input->post('sal_type') ?  $this->input->post('sal_type') : 1, 'salary_type_id' => $key, 'amount' => (!empty($value) ? $value : 0), 'create_at' => $date, 'gross_salary' => $this->input->post('gross_salary', true), ];
+                $this->Payroll_model->site_salary_setup_create($postData);
+               
+            }
+            $this->Site->update_site_rate($this->input->post('site_id', true),  $hrate);
+
+            $this->session->set_flashdata('message', display('save_successfully'));
+            redirect("Cpayroll/salary_setup_form");
+        } else {
+            $this->session->set_flashdata('error_message', display('already_exist'));
+            redirect("Cpayroll/salary_setup_form");
+        }
+    }
+
+
     // Manage Salary Setup
     public function manage_salary_setup() {
         $this->load->model('Payroll_model');
@@ -140,6 +168,17 @@ class Cpayroll extends CI_Controller {
         $content = $this->parser->parse('payroll/salary_setup_list', $data, true);
         $this->template->full_admin_html_view($content);
     }
+
+    // Manage Site Salary Setup 
+    public function manage_site_salary_setup() {
+        $this->load->model('Payroll_model');
+        $data['title'] = display('salary');
+        $data['sub_title'] = "Manage Site Salary Setup";
+        $data['emp_sl_setup'] = $this->Payroll_model->site_salary_setupindex();
+        $content = $this->parser->parse('payroll/salary_site_setup_list', $data, true);
+        $this->template->full_admin_html_view($content);
+    }
+
     // Salary Setup form
     public function salsetup_upform($id) {
         $this->load->model('Payroll_model');
@@ -153,6 +192,20 @@ class Cpayroll extends CI_Controller {
         $content = $this->parser->parse('payroll/salary_setup_update_form', $data, true);
         $this->template->full_admin_html_view($content);
     }
+ // Salary Setup form
+ public function site_salsetup_upform($id) {
+    $this->load->model('Payroll_model');
+    $data['title'] = display('salary');
+    $data['sub_title'] = "Update Site Salary Setup";
+    $data['data'] = $this->Payroll_model->site_salary_s_updateForm($id);
+    $data['samlft'] = $this->Payroll_model->site_salary_amountlft($id);
+    $data['amo'] = $this->Payroll_model->site_salary_amount($id);
+    $data['site'] = $this->Payroll_model->sitedropdownbyid($id);
+    $data['site_info'] = $this->Site->get_site_by_id($id);
+    $content = $this->parser->parse('payroll/site_salary_setup_update_form', $data, true);
+    $this->template->full_admin_html_view($content);
+}
+
     // salary setup update
     public function salary_setup_update() {
         $amount = $this->input->post('amount', true);
@@ -161,6 +214,19 @@ class Cpayroll extends CI_Controller {
             $this->Payroll_model->update_sal_stup($postData);
         }
         redirect("Cpayroll/manage_salary_setup");
+    }
+
+     // site salary setup update
+     public function site_salary_setup_update($id) {
+        $amount = $this->input->post('amount', true);
+        $basic = $this->input->post('basic', true);
+        $site_id = $id;
+        $this->Site->update_site_rate($site_id, $basic);
+        foreach ($amount as $key => $value) {
+            $postData = array('site_id' =>  $site_id, 'sal_type' => $this->input->post('sal_type', true), 'salary_type_id' => $key, 'amount' => $value, 'gross_salary' => $this->input->post('gross_salary', true),);
+            $this->Payroll_model->update_site_sal_stup($postData);
+        }
+        redirect("Cpayroll/manage_site_salary_setup");
     }
     public function delete_salsetup($id = null) {
         if ($this->Payroll_model->emp_salstup_delete($id)) {
@@ -171,6 +237,17 @@ class Cpayroll extends CI_Controller {
             $this->session->set_flashdata('error_message', display('please_try_again'));
         }
         redirect("Cpayroll/manage_salary_setup");
+    }
+
+    public function delete_site_salsetup($id = null) {
+        if ($this->Payroll_model->site_salstup_delete($id)) {
+            #set success message
+            $this->session->set_flashdata('message', display('delete_successfully'));
+        } else {
+            #set error_message message
+            $this->session->set_flashdata('error_message', display('please_try_again'));
+        }
+        redirect("Cpayroll/manage_site_salary_setup");
     }
     // Salary Generate
     public function salary_generate_form() {

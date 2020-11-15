@@ -79,6 +79,14 @@ class Site extends CI_Model {
         return false;
     }
 
+    public function update_site_rate($site_id,$basic) {
+        $data = array('hrate' => $basic);    
+        $this->db->where('site_id', $site_id);
+        
+       
+        return $this->db->update('site_information', $data);
+    }
+
     public function insert_site($data) {
         $result = $this->db->insert('site_information', $data);
         if ($result) {

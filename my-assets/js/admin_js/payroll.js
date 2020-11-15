@@ -36,6 +36,43 @@ function employechange(id) {
         }
     });
 }
+//TODO
+function sitechange(id) {
+    var base_url = $("#base_url").val();
+    var csrf_test_name = $('[name="csrf_test_name"]').val();
+    $.ajax({
+        url: base_url + "Cpayroll/employeebasic/",
+        method: 'post',
+        dataType: 'json',
+        data: {
+            'employee_id': id,
+            csrf_test_name: csrf_test_name,
+        },
+        success: function (data) {
+            document.getElementById('basic').value = data.rate;
+            document.getElementById('sal_type').value = data.rate_type;
+            document.getElementById('sal_type_name').value = data.stype;
+            document.getElementById('grsalary').value = '';
+            if (data.rate_type == 1) {
+                document.getElementById("taxinput").disabled = true;
+                document.getElementById("taxmanager").checked = true;
+                document.getElementById("taxmanager").setAttribute('disabled', 'disabled');
+            } else {
+                document.getElementById("taxinput").disabled = false;
+                document.getElementById("taxmanager").checked = false;
+                document.getElementById("taxmanager").removeAttribute('disabled');
+            }
+            var i;
+            var count = $('#add tr').length;
+            for (i = 0; i < count; i++) {
+                $("#add_" + i).val('');
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert('Error get data from ajax');
+        }
+    });
+}
 
 "use strict";
 function summary() {
@@ -43,23 +80,41 @@ function summary() {
     $(".addamount").each(function () {
         isNaN(this.value) || 0 == this.value.length || (addper += parseFloat(this.value))
     });
-    if (addper > 100) {
-        alert('You Can Not input more than 100%');
-    }
+   
     var b = parseInt($('#basic').val());
     var add = 0;
     var deduct = 0;
     $(".addamount").each(function () {
-        var value = this.value;
-        var basic = parseInt($('#basic').val());
-        isNaN(value * basic / 100) || 0 == (value * basic / 100).length || (add += parseFloat(value * basic / 100))
+        var value = parseInt(this.value);
+        isNaN(value ) || 0 == (value ).length || (add += value )
+        
     });
     $(".deducamount").each(function () {
-        var value = this.value;
-        var basic = parseInt($('#basic').val());
-        isNaN(value * basic / 100) || 0 == (value * basic / 100).length || (deduct += parseFloat(value * basic / 100))
+        var value = parseInt(this.value);
+        isNaN(value ) || 0 == (value ).length || (deduct += value )
     });
     document.getElementById('grsalary').value = add + b - (deduct);
+}
+
+function summary_site() {
+    var addper = 0;
+    $(".addamount").each(function () {
+        isNaN(this.value) || 0 == this.value.length || (addper += parseFloat(this.value))
+    });
+   
+    var b = parseInt($('#basic_site').val());
+    var add = 0;
+    var deduct = 0;
+    $(".addamount").each(function () {
+        var value = parseInt(this.value);
+        isNaN(value ) || 0 == (value ).length || (add += value )
+        
+    });
+    $(".deducamount").each(function () {
+        var value = parseInt(this.value);
+        isNaN(value ) || 0 == (value ).length || (deduct += value )
+    });
+    document.getElementById('gross_salary').value = add + b - (deduct);
 }
 
 
@@ -172,4 +227,14 @@ function Payment(salpayid, employee_id, TotalSalary, WorkHour, Period, salary_mo
         }
 
     });
+}
+
+function show_employee_form() {
+    $('.employee_form').show();
+    $('.site_form').hide();
+}
+
+function show_site_form() {
+    $('.employee_form').hide();
+    $('.site_form').show();
 }

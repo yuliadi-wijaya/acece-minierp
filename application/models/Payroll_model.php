@@ -75,9 +75,45 @@ class Payroll_model extends CI_Model {
         }
         return $list;
     }
+
+    public function sitedropdown(){
+        $this->db->select('*');
+        $this->db->from('site_information');
+        $query = $this->db->get();
+        $data = $query->result();
+       
+        $list = array('' => 'Select One...');
+        if (!empty($data) ) {
+            foreach ($data as $value) {
+                $list[$value->site_id] = $value->name;
+            } 
+        }
+        return $list;
+    }
+
+    public function sitedropdownbyid($id){
+        $this->db->select('*');
+        $this->db->from('site_information')->where('site_id',$id);;
+        $query = $this->db->get();
+        $data = $query->result();
+       
+        $list = array();
+        if (!empty($data) ) {
+            foreach ($data as $value) {
+                $list[$value->site_id] = $value->name;
+            } 
+        }
+        return $list;
+    }
+
         public function salary_setup_create($data = array())
     {
         return $this->db->insert('employee_salary_setup', $data);
+    }
+
+    public function site_salary_setup_create($data = array())
+    {
+        return $this->db->insert('site_salary_setup', $data);
     }
 
          public function salary_setupindex()
@@ -90,17 +126,47 @@ class Payroll_model extends CI_Model {
             ->get()
             ->result();
     }
+
+    public function site_salary_setupindex()
+    {
+             return $this->db->select('count(DISTINCT(sstp.id)) as id,sstp.*,p.id,p.name')   
+            ->from('site_salary_setup sstp')
+            ->join('site_information p', 'sstp.site_id = p.site_id', 'inner')
+            ->group_by('sstp.site_id')
+            ->order_by('sstp.salary_type_id', 'desc')
+            ->get()
+            ->result();
+    }
+
     public function salary_s_updateForm($id){
-        $this->db->where('employee_id',$id);
-        $query = $this->db->get('employee_salary_setup');
+        $this->db->where('site_id',$id);
+        $query = $this->db->get('site_salary_setup');
         return $query->result_array();
     }
+
+    public function site_salary_s_updateForm($id){
+        $this->db->where('site_id',$id);
+        $query = $this->db->get('site_salary_setup');
+        return $query->result_array();
+    }
+
          public function salary_amountlft($id)
     {
         return $result = $this->db->select('employee_salary_setup.*,salary_type.*') 
              ->from('employee_salary_setup')
              ->join('salary_type','salary_type.salary_type_id=employee_salary_setup.salary_type_id')
              ->where('employee_salary_setup.employee_id',$id)
+             ->where('salary_type.salary_type',0)
+             ->get()
+             ->result();
+    }
+
+    public function site_salary_amountlft($id)
+    {
+        return $result = $this->db->select('site_salary_setup.*,salary_type.*') 
+             ->from('site_salary_setup')
+             ->join('salary_type','salary_type.salary_type_id=site_salary_setup.salary_type_id')
+             ->where('site_salary_setup.site_id',$id)
              ->where('salary_type.salary_type',0)
              ->get()
              ->result();
@@ -116,6 +182,18 @@ class Payroll_model extends CI_Model {
              ->get()
              ->result();
     }
+
+    public function site_salary_amount($id)
+    {
+        return $result = $this->db->select('site_salary_setup.*,salary_type.*') 
+             ->from('site_salary_setup')
+             ->join('salary_type','salary_type.salary_type_id=site_salary_setup.salary_type_id')
+             ->where('site_salary_setup.site_id',$id)
+             ->where('salary_type.salary_type',1)
+             ->get()
+             ->result();
+    }
+
         // employee Information
     public function employee_informationId($id)
     {
@@ -134,11 +212,31 @@ class Payroll_model extends CI_Model {
         return $this->db->where($term)
             ->update("employee_salary_setup", $data);
     }
+
+    public function update_site_sal_stup($data = array())
+    {
+        $term = array('site_id' => $data['site_id'], 'salary_type_id' => $data['salary_type_id']);
+
+        return $this->db->where($term)
+            ->update("site_salary_setup", $data);
+    }
     
     public function emp_salstup_delete($id = null)
     {
         $this->db->where('employee_id',$id)
             ->delete('employee_salary_setup');
+
+        if ($this->db->affected_rows()) {
+            return true;
+        } else {
+            return false;
+        }
+    } 
+
+    public function site_salstup_delete($id = null)
+    {
+        $this->db->where('site_id',$id)
+            ->delete('site_salary_setup');
 
         if ($this->db->affected_rows()) {
             return true;
@@ -243,4 +341,13 @@ class Payroll_model extends CI_Model {
             ->num_rows();
 
     }
+
+    public function check_exist_site_salary($site_id){
+        return $this->db->select('*')   
+           ->from('site_salary_setup')
+           ->where('site_id',$employee_id)
+           ->get()
+           ->num_rows();
+
+   }
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 31, 2020 at 05:02 PM
+-- Generation Time: Nov 15, 2020 at 02:25 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -55,6 +55,7 @@ CREATE TABLE `acc_coa` (
 INSERT INTO `acc_coa` (`HeadCode`, `HeadName`, `PHeadName`, `HeadLevel`, `IsActive`, `IsTransaction`, `IsGL`, `HeadType`, `IsBudget`, `IsDepreciation`, `customer_id`, `supplier_id`, `DepreciationRate`, `CreateBy`, `CreateDate`, `UpdateBy`, `UpdateDate`) VALUES
 ('102030000001', '1-Walking Customer', 'Customer Receivable', 4, 1, 1, 0, 'A', 0, 0, 1, NULL, '0.00', '1', '2019-11-16 08:44:42', '', '0000-00-00 00:00:00'),
 ('502040001', '1-YuliadiWijaya', 'Employee Ledger', 3, 1, 1, 0, 'L', 0, 0, NULL, NULL, '0.00', 'Y7zaFl4wCcL8iOm', '2020-09-27 02:32:42', '', '0000-00-00 00:00:00'),
+('502040002', '3-Testasdasd', 'Employee Ledger', 3, 1, 1, 0, 'L', 0, 0, NULL, NULL, '0.00', '1', '2020-11-15 14:20:03', '', '0000-00-00 00:00:00'),
 ('50202', 'Account Payable', 'Current Liabilities', 2, 1, 0, 1, 'L', 0, 0, NULL, NULL, '0.00', 'admin', '2015-10-15 19:50:43', '', '2019-09-05 00:00:00'),
 ('10203', 'Account Receivable', 'Current Asset', 2, 1, 0, 0, 'A', 0, 0, NULL, NULL, '0.00', '', '2019-09-05 00:00:00', 'admin', '2013-09-18 15:29:35'),
 ('1', 'Assets', 'COA', 0, 1, 0, 0, 'A', 0, 0, NULL, NULL, '0.00', '', '2019-09-05 00:00:00', '', '2019-09-05 00:00:00'),
@@ -114,7 +115,8 @@ INSERT INTO `acc_transaction` (`ID`, `VNo`, `Vtype`, `VDate`, `COAID`, `Narratio
 (5, 'September 2020', 'Salary', '2020-09-27', '502040001', 'Employee Salary Generate Month of September 2020', '0.00', '3125000.00', '1', '1', '2020-09-27 19:54:02', NULL, NULL, '1'),
 (6, '2', 'Salary', '2020-09-27', '1020101', 'Cash in hand Credit For Employee Salary for-  Yuliadi Wijaya', '0.00', '3125000.00', '1', 'Adi Mini.ERP', '2020-09-27 19:54:23', NULL, NULL, '1'),
 (7, '2', 'Salary', '2020-09-27', '403', 'Salary paid For- Yuliadi Wijaya', '3125000.00', '0.00', '1', 'Adi Mini.ERP', '2020-09-27 19:54:23', NULL, NULL, '1'),
-(8, '2', 'Salary', '2020-09-27', '502040001', 'Salary paid For- Yuliadi Wijaya', '3125000.00', '0.00', '1', 'Adi Mini.ERP', '2020-09-27 19:54:23', NULL, NULL, '1');
+(8, '2', 'Salary', '2020-09-27', '502040001', 'Salary paid For- Yuliadi Wijaya', '3125000.00', '0.00', '1', 'Adi Mini.ERP', '2020-09-27 19:54:23', NULL, NULL, '1'),
+(9, 'October 2020', 'Salary', '2020-11-08', '502040001', 'Employee Salary Generate Month of October 2020', '0.00', '30675000.00', '1', '1', '2020-11-08 14:00:24', NULL, NULL, '1');
 
 -- --------------------------------------------------------
 
@@ -358,16 +360,18 @@ CREATE TABLE `employee_history` (
   `image` text,
   `country` varchar(50) NOT NULL,
   `city` varchar(50) NOT NULL,
-  `zip` varchar(50) NOT NULL
+  `zip` varchar(50) NOT NULL,
+  `site_id` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `employee_history`
 --
 
-INSERT INTO `employee_history` (`id`, `first_name`, `last_name`, `designation`, `phone`, `rate_type`, `hrate`, `email`, `blood_group`, `address_line_1`, `address_line_2`, `image`, `country`, `city`, `zip`) VALUES
-(1, 'Yuliadi', 'Wijaya', '1', '085214141404', 1, 1500000, 'yuliadi.wijaya@acecesaranaprima.com', 'A', 'Penjaringan', '', 'http://localhost/minierp/my-assets/image/employee/cf1d2abd06eef2861470877af746be37.jpg', 'Indonesia', 'Jakarta Utara', '141450'),
-(2, 'mico', 'zhou', '2', '081231313', 1, 1, 'asdsadsad', '', '', '', NULL, '', '', '');
+INSERT INTO `employee_history` (`id`, `first_name`, `last_name`, `designation`, `phone`, `rate_type`, `hrate`, `email`, `blood_group`, `address_line_1`, `address_line_2`, `image`, `country`, `city`, `zip`, `site_id`) VALUES
+(1, 'Yuliadi', 'Wijaya', '1', '085214141404', 1, 1500000, 'yuliadi.wijaya@acecesaranaprima.com', 'A', 'Penjaringan', '', 'http://localhost/minierp/my-assets/image/employee/cf1d2abd06eef2861470877af746be37.jpg', 'Indonesia', 'Jakarta Utara', '141450', ''),
+(2, 'mico', 'zhou', '2', '081231313', 1, 10000, 'asdsadsad', '', '', '', NULL, '', '', '', ''),
+(3, 'Test', 'asdasd', '3', '081262272772', 1, 0, 'asdsadsad@asd.com', '', '', '', '', '', '', '', '9TQCYEIIL2');
 
 -- --------------------------------------------------------
 
@@ -393,7 +397,8 @@ CREATE TABLE `employee_salary_payment` (
 --
 
 INSERT INTO `employee_salary_payment` (`emp_sal_pay_id`, `generate_id`, `employee_id`, `total_salary`, `total_working_minutes`, `working_period`, `payment_due`, `payment_date`, `paid_by`, `salary_month`) VALUES
-(2, 2, '1', '3125000.00', '2.0833333333333', '1', 'paid', '2020-09-27', 'Adi Mini.ERP', 'September 2020');
+(2, 2, '1', '3125000.00', '2.0833333333333', '1', 'paid', '2020-09-27', 'Adi Mini.ERP', 'September 2020'),
+(3, 3, '1', '30675000.00', '20.45', '2', '', '', '', 'October 2020');
 
 -- --------------------------------------------------------
 
@@ -406,7 +411,7 @@ CREATE TABLE `employee_salary_setup` (
   `employee_id` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `sal_type` varchar(30) NOT NULL,
   `salary_type_id` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `amount` decimal(12,2) NOT NULL DEFAULT '0.00',
+  `amount` int(11) NOT NULL DEFAULT '0',
   `create_date` date DEFAULT NULL,
   `update_date` datetime(6) DEFAULT NULL,
   `update_id` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
@@ -418,8 +423,12 @@ CREATE TABLE `employee_salary_setup` (
 --
 
 INSERT INTO `employee_salary_setup` (`e_s_s_id`, `employee_id`, `sal_type`, `salary_type_id`, `amount`, `create_date`, `update_date`, `update_id`, `gross_salary`) VALUES
-(1, '1', '1', '1', '0.00', '2020-09-27', NULL, '', 1500000),
-(2, '1', '1', '2', '0.00', '2020-09-27', NULL, '', 1500000);
+(9, '1', '1', '4', 10000, '2020-11-14', NULL, '', 1524000),
+(10, '1', '1', '5', 1000, '2020-11-14', NULL, '', 1524000),
+(11, '1', '1', '6', 1000, '2020-11-14', NULL, '', 1524000),
+(12, '1', '1', '7', 1000, '2020-11-14', NULL, '', 1524000),
+(13, '1', '1', '8', 1000, '2020-11-14', NULL, '', 1524000),
+(14, '1', '1', '9', 10000, '2020-11-14', NULL, '', 1524000);
 
 -- --------------------------------------------------------
 
@@ -1595,7 +1604,8 @@ CREATE TABLE `pesonal_loan_information` (
 --
 
 INSERT INTO `pesonal_loan_information` (`id`, `person_id`, `person_name`, `person_phone`, `person_address`, `status`) VALUES
-(1, 'AKRFJWBWHE', 'Yuliadi Wijaya', '0989898', 'Jakarta', 1);
+(1, 'AKRFJWBWHE', 'Yuliadi Wijaya', '0989898', 'Jakarta', 1),
+(2, 'ROOWYDDUOU', 'Test', '081272121212', 'Bandung', 1);
 
 -- --------------------------------------------------------
 
@@ -1958,7 +1968,8 @@ CREATE TABLE `salary_sheet_generate` (
 --
 
 INSERT INTO `salary_sheet_generate` (`ssg_id`, `name`, `gdate`, `start_date`, `end_date`, `generate_by`) VALUES
-(2, '', 'September 2020', '2020-9-1', '2020-9-30', 'Adi Mini.ERP');
+(2, '', 'September 2020', '2020-9-1', '2020-9-30', 'Adi Mini.ERP'),
+(3, '', 'October 2020', '2020-10-1', '2020-10-31', 'Adi Mini.ERP');
 
 -- --------------------------------------------------------
 
@@ -2076,28 +2087,87 @@ CREATE TABLE `site_information` (
   `name` varchar(100) NOT NULL,
   `description` text,
   `address` text NOT NULL,
-  `status` int(11) NOT NULL DEFAULT '1'
+  `status` int(11) NOT NULL DEFAULT '1',
+  `hrate` int(12) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `site_information`
 --
 
-INSERT INTO `site_information` (`id`, `site_id`, `name`, `description`, `address`, `status`) VALUES
-(6, 'JAC3T8Q4SO', 'Head Office', 'Head Office', 'Sunter Jakarta Utara', 1),
-(7, 'BOHMIEDFC5', 'Gudang Dadap', 'Gudang Dadap', 'Gudang Dadap', 1),
-(8, 'EIYLKCBQI1', 'Apartemen Senayan', 'Apartemen Senayan', 'Apartemen Senayan', 1),
-(9, 'OT96PR7PIJ', 'MPP', 'MPP', 'MPP', 1),
-(10, '9TQCYEIIL2', 'Transpark', 'Transpark', 'Transpark', 1),
-(11, 'J9174ZS963', 'Terminal 1 C', 'Terminal 1 C', 'Terminal 1 C', 1),
-(12, 'W697MHUED8', 'Hotel Domestik', 'Hotel Domestik', 'Hotel Domestik', 1),
-(13, 'ARK1FUO5VR', 'Graha Pertamina', 'Graha Pertamina', 'Graha Pertamina', 1),
-(14, '9Y3QDWGBVW', 'Makassar', 'Makassar', 'Makassar', 1),
-(15, '4VWRW88A32', 'AEON Mall', 'AEON Mall', 'AEON Mall', 1),
-(16, 'KE9JRHLW2X', 'PADANG', 'PADANG', 'PADANG', 1),
-(17, 'R9DOYCXG1L', 'Terminal 2 F', 'Terminal 2 F', 'Terminal 2 F', 1),
-(18, 'NQ48G45UAE', 'Thamrin Nine', 'Thamrin Nine', 'Thamrin Nine', 1),
-(19, 'AW9XSMB76K', 'Pondok Kelapa', 'Pondok Kelapa', 'Pondok Kelapa', 1);
+INSERT INTO `site_information` (`id`, `site_id`, `name`, `description`, `address`, `status`, `hrate`) VALUES
+(6, 'JAC3T8Q4SO', 'Head Office', 'Head Office', 'Sunter Jakarta Utara', 1, 100000),
+(7, 'BOHMIEDFC5', 'Gudang Dadap', 'Gudang Dadap', 'Gudang Dadap', 1, 100),
+(8, 'EIYLKCBQI1', 'Apartemen Senayan', 'Apartemen Senayan', 'Apartemen Senayan', 1, 1000),
+(9, 'OT96PR7PIJ', 'MPP', 'MPP', 'MPP', 1, 100000),
+(10, '9TQCYEIIL2', 'Transpark', 'Transpark', 'Transpark', 1, 100000),
+(11, 'J9174ZS963', 'Terminal 1 C', 'Terminal 1 C', 'Terminal 1 C', 1, 100000),
+(12, 'W697MHUED8', 'Hotel Domestik', 'Hotel Domestik', 'Hotel Domestik', 1, 100000),
+(13, 'ARK1FUO5VR', 'Graha Pertamina', 'Graha Pertamina', 'Graha Pertamina', 1, 100000),
+(14, '9Y3QDWGBVW', 'Makassar', 'Makassar', 'Makassar', 1, 100000),
+(15, '4VWRW88A32', 'AEON Mall', 'AEON Mall', 'AEON Mall', 1, 100000),
+(16, 'KE9JRHLW2X', 'PADANG', 'PADANG', 'PADANG', 1, 100000),
+(17, 'R9DOYCXG1L', 'Terminal 2 F', 'Terminal 2 F', 'Terminal 2 F', 1, 100000),
+(18, 'NQ48G45UAE', 'Thamrin Nine', 'Thamrin Nine', 'Thamrin Nine', 1, 9999),
+(19, 'AW9XSMB76K', 'Pondok Kelapa', 'Pondok Kelapa', 'Pondok Kelapa', 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `site_salary_setup`
+--
+
+CREATE TABLE `site_salary_setup` (
+  `id` int(11) NOT NULL,
+  `site_id` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sal_type` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `salary_type_id` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `amount` int(11) NOT NULL DEFAULT '0',
+  `create_at` date DEFAULT NULL,
+  `updated_at` datetime NOT NULL,
+  `gross_salary` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `site_salary_setup`
+--
+
+INSERT INTO `site_salary_setup` (`id`, `site_id`, `sal_type`, `salary_type_id`, `amount`, `create_at`, `updated_at`, `gross_salary`) VALUES
+(8, 'EIYLKCBQI1', '', '4', 1001, '2020-11-15', '0000-00-00 00:00:00', 7204),
+(9, 'EIYLKCBQI1', '', '5', 1001, '2020-11-15', '0000-00-00 00:00:00', 7204),
+(10, 'EIYLKCBQI1', '', '6', 1100, '2020-11-15', '0000-00-00 00:00:00', 7204),
+(11, 'EIYLKCBQI1', '', '7', 1100, '2020-11-15', '0000-00-00 00:00:00', 7204),
+(12, 'EIYLKCBQI1', '', '8', 1001, '2020-11-15', '0000-00-00 00:00:00', 7204),
+(13, 'EIYLKCBQI1', '', '9', 1001, '2020-11-15', '0000-00-00 00:00:00', 7204),
+(14, 'EIYLKCBQI1', '', '10', 0, '2020-11-15', '0000-00-00 00:00:00', 7204),
+(15, 'JAC3T8Q4SO', '1', '4', 10000, '2020-11-15', '0000-00-00 00:00:00', 100),
+(16, 'JAC3T8Q4SO', '1', '5', 30000, '2020-11-15', '0000-00-00 00:00:00', 100),
+(17, 'JAC3T8Q4SO', '1', '6', 20000, '2020-11-15', '0000-00-00 00:00:00', 100),
+(18, 'JAC3T8Q4SO', '1', '7', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(19, 'JAC3T8Q4SO', '1', '8', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(20, 'JAC3T8Q4SO', '1', '9', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(21, 'JAC3T8Q4SO', '1', '10', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(22, 'BOHMIEDFC5', '1', '4', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(23, 'BOHMIEDFC5', '1', '5', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(24, 'BOHMIEDFC5', '1', '6', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(25, 'BOHMIEDFC5', '1', '7', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(26, 'BOHMIEDFC5', '1', '8', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(27, 'BOHMIEDFC5', '1', '9', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(28, 'BOHMIEDFC5', '1', '10', 0, '2020-11-15', '0000-00-00 00:00:00', 100),
+(29, 'AW9XSMB76K', '1', '4', 1000, '2020-11-15', '0000-00-00 00:00:00', 11999),
+(30, 'AW9XSMB76K', '1', '5', 10000, '2020-11-15', '0000-00-00 00:00:00', 11999),
+(31, 'AW9XSMB76K', '1', '6', 0, '2020-11-15', '0000-00-00 00:00:00', 11999),
+(32, 'AW9XSMB76K', '1', '7', 0, '2020-11-15', '0000-00-00 00:00:00', 11999),
+(33, 'AW9XSMB76K', '1', '8', 0, '2020-11-15', '0000-00-00 00:00:00', 11999),
+(34, 'AW9XSMB76K', '1', '9', 0, '2020-11-15', '0000-00-00 00:00:00', 11999),
+(35, 'AW9XSMB76K', '1', '10', 0, '2020-11-15', '0000-00-00 00:00:00', 11999),
+(36, 'NQ48G45UAE', '1', '4', 1111, '2020-11-15', '0000-00-00 00:00:00', 11332),
+(37, 'NQ48G45UAE', '1', '5', 111, '2020-11-15', '0000-00-00 00:00:00', 11332),
+(38, 'NQ48G45UAE', '1', '6', 111, '2020-11-15', '0000-00-00 00:00:00', 11332),
+(39, 'NQ48G45UAE', '1', '7', 0, '2020-11-15', '0000-00-00 00:00:00', 11332),
+(40, 'NQ48G45UAE', '1', '8', 0, '2020-11-15', '0000-00-00 00:00:00', 11332),
+(41, 'NQ48G45UAE', '1', '9', 0, '2020-11-15', '0000-00-00 00:00:00', 11332),
+(42, 'NQ48G45UAE', '1', '10', 0, '2020-11-15', '0000-00-00 00:00:00', 11332);
 
 -- --------------------------------------------------------
 
@@ -2762,6 +2832,12 @@ ALTER TABLE `site_information`
   ADD KEY `site_id` (`site_id`) USING BTREE;
 
 --
+-- Indexes for table `site_salary_setup`
+--
+ALTER TABLE `site_salary_setup`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `site_work_hour`
 --
 ALTER TABLE `site_work_hour`
@@ -2839,7 +2915,7 @@ ALTER TABLE `web_setting`
 -- AUTO_INCREMENT for table `acc_transaction`
 --
 ALTER TABLE `acc_transaction`
-  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `app_setting`
@@ -2887,19 +2963,19 @@ ALTER TABLE `email_config`
 -- AUTO_INCREMENT for table `employee_history`
 --
 ALTER TABLE `employee_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `employee_salary_payment`
 --
 ALTER TABLE `employee_salary_payment`
-  MODIFY `emp_sal_pay_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `emp_sal_pay_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `employee_salary_setup`
 --
 ALTER TABLE `employee_salary_setup`
-  MODIFY `e_s_s_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `e_s_s_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `expense`
@@ -2965,7 +3041,7 @@ ALTER TABLE `person_ledger`
 -- AUTO_INCREMENT for table `pesonal_loan_information`
 --
 ALTER TABLE `pesonal_loan_information`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `product_category`
@@ -3031,7 +3107,7 @@ ALTER TABLE `role_permission`
 -- AUTO_INCREMENT for table `salary_sheet_generate`
 --
 ALTER TABLE `salary_sheet_generate`
-  MODIFY `ssg_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `ssg_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `salary_type`
@@ -3068,6 +3144,12 @@ ALTER TABLE `service_invoice_details`
 --
 ALTER TABLE `site_information`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- AUTO_INCREMENT for table `site_salary_setup`
+--
+ALTER TABLE `site_salary_setup`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `site_work_hour`

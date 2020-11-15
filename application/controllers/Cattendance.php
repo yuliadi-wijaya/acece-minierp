@@ -209,7 +209,7 @@ class Cattendance extends CI_Controller {
         $data['query'] = $this->Attendance_model->datewiseReport($format_start_date, $format_end_date);
         // TODO Process Data
 
-        echo "<pre>";
+         
         // print_r( $mapData);
         $data['result']=array();
         foreach ($data['query'] as $d) {

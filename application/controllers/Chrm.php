@@ -13,6 +13,7 @@ class Chrm extends CI_Controller {
         $this->load->library('auth');
         $this->load->library('session');
         $this->load->model('Hrm_model');
+        $this->load->model('Payroll_model');
         $this->auth->check_admin_auth();
     }
 
@@ -88,6 +89,7 @@ class Chrm extends CI_Controller {
         $data['title'] = display('employee');
         $data['sub_title'] = display('add_employee');
         $data['desig'] = $this->Hrm_model->designation_dropdown();
+        $data['site']= $this->Payroll_model->sitedropdown();
         $content = $this->parser->parse('hr/employee_form', $data, true);
         $this->template->full_admin_html_view($content);
     }
@@ -136,6 +138,7 @@ class Chrm extends CI_Controller {
                 'country'       => $this->input->post('country',true),
                 'city'          => $this->input->post('city',true),
                 'zip'           => $this->input->post('zip',true),
+                'site_id'         => $this->input->post('site_id') ? $this->input->post('site_id') :'',
             ];   
 
              if ($this->Hrm_model->create_employee($postData)) { 
@@ -166,6 +169,7 @@ class Chrm extends CI_Controller {
         $data['sub_title']            = display('update_employee');
         $data['employee_data']    = $this->Hrm_model->employee_editdata($id);
         $data['desig']            = $this->Hrm_model->designation_dropdown();
+        $data['site']= $this->Payroll_model->sitedropdown();
         $content                  = $this->parser->parse('hr/employee_update_form', $data, true);
         $this->template->full_admin_html_view($content);
     }
@@ -207,6 +211,7 @@ class Chrm extends CI_Controller {
                 'country'       => $this->input->post('country',true),
                 'city'          => $this->input->post('city',true),
                 'zip'           => $this->input->post('zip',true),
+                'site_id'         => $this->input->post('site_id') ? $this->input->post('site_id') :'',
             ];   
 
              if ($this->Hrm_model->update_employee($postData,$headname)) { 

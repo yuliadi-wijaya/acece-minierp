@@ -1095,7 +1095,14 @@
 								echo "active";
 								} else {
 								echo " ";
-								}?>"><a href="<?php echo base_url('Cpayroll/manage_salary_setup') ?>"><?php echo display('manage_salary_setup') ?></a></li>
+								}?>"><a href="<?php echo base_url('Cpayroll/manage_salary_setup') ?>"><?php echo "Manage Employee Salary " ?></a></li>
+							<?php }?> 
+							<?php if($this->permission1->method('manage_salary_setup','read')->access()){ ?> 
+							<li class="treeview <?php if ($this->uri->segment('2') == ("manage_site_salary_setup")){
+								echo "active";
+								} else {
+								echo " ";
+								}?>"><a href="<?php echo base_url('Cpayroll/manage_site_salary_setup') ?>"><?php echo "Manage Site Salary Setup" ?></a></li>
 							<?php }?> 
 							<?php if($this->permission1->method('salary_generate','create')->access()){ ?>            
 							<li class="treeview <?php if ($this->uri->segment('2') == ("salary_generate_form")){

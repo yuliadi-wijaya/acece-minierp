@@ -45,8 +45,24 @@
             $this->session->unset_userdata('error_message');
         }
         ?>
+            <div class="">
 
-        <div class="row">
+
+                <!-- <div class="btn-group"> -->
+                <button class="btn btn-info btn-lg" onclick="show_employee_form()">
+                    Employee   
+                </button>
+                <button class="btn btn-info  btn-lg" onclick="show_site_form()">
+                    Site        
+                </button>
+                <!-- </div> -->
+
+              
+
+            </div>
+        
+
+        <div class="row employee_form" style="display: none;">
             <div class="col-sm-12 col-md-12">
                 <div class="panel panel-bd lobidrag">
                     <div class="panel-heading">
@@ -91,7 +107,7 @@
                                     </div>
                                     <?php $x = 0; foreach ($slname as $ab) { ?>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label text-left"><?php echo $ab->sal_name; ?> (%)</label>
+                                        <label class="col-sm-3 col-form-label text-left"><?php echo $ab->sal_name; ?> </label>
                                         <div class="col-sm-9">
                                             <input type="text" name="amount[<?php echo $ab->salary_type_id; ?>]" class="form-control addamount" onkeyup="summary()" id="add_<?php echo $x; ?>">
                                         </div>
@@ -112,7 +128,7 @@
                                     </div>
                                     <?php $y = 0; foreach ($sldname as $row) { ?>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label text-left"><?php echo $row->sal_name; ?> (%)</label>
+                                        <label class="col-sm-3 col-form-label text-left"><?php echo $row->sal_name; ?> </label>
                                         <div class="col-sm-9">
                                             <input type="text" name="amount[<?php echo $row->salary_type_id; ?>]" onkeyup="summary()" class="form-control deducamount" id="dd_<?php echo $y; ?>">
                                         </div>
@@ -142,6 +158,102 @@
                 </div>  
             </div>
         </div>
+
+        <!-- TODO change to site -->
+        <div class="row site_form" style="display: none;">
+            <div class="col-sm-12 col-md-12">
+                <div class="panel panel-bd lobidrag">
+                    <div class="panel-heading">
+                        <div class="panel-title">
+                            <h4><?php echo "Add Site Salary Setup" ?></h4>
+                            
+                        </div>
+                        
+                    </div>
+                    <?php echo form_open('Cpayroll/site_salary_setup_entry', 'id="validate"') ?>
+                    <div class="panel-body">
+                        <div class="form-group row">
+                            <label for="site_id" class="col-sm-3 col-form-label"><?php echo "Site Name" ?> <span class="text-danger">*</span></label>
+                            <div class="col-sm-5">
+                                <?php echo form_dropdown('site_id', $site, null, 'class="form-control" id="site_id" required') ?>
+                            </div>
+                        </div>
+                        
+
+                       
+
+                        <table class="table table-bordered table-striped table-hover datatable table-color-primary" width="100%">
+                            <tr>
+                                <th class="col-sm-6 text-center">
+                                    <h4 class="payrolladditiondeduction"><?php echo display('addition') ?></h4>
+                                </th>
+                                <th class="col-sm-6 text-center">
+                                    <h4 class="payrolladditiondeduction"><?php echo display('deduction') ?></h4>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td class="col-sm-6 text-center">
+                                    <br>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-left"><?php echo display('basic') ?></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" onkeyup="summary_site()" id="basic_site" name="basic" class="form-control" >
+                                        </div>
+                                    </div>
+                                    <?php $x = 0; foreach ($slname as $ab) { ?>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-left"><?php echo $ab->sal_name; ?> </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="amount[<?php echo $ab->salary_type_id; ?>]" class="form-control addamount" onkeyup="summary_site()" id="add_<?php echo $x; ?>">
+                                        </div>
+                                    </div>
+                                    <?php $x++; }?>
+                                </td> 
+                                <td class="col-sm-6 text-center">
+                                    <br>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-left"><?php echo display('tax') ?></label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="amount[]"  onkeyup="summary_site()"  class="form-control deducamount" id="taxinput">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="checkbox" name="tax_manager" id="taxmanager" onchange='handletax(this);' value="1"> Tax Manager
+                                        </div>
+                                        
+                                    </div>
+                                    <?php $y = 0; foreach ($sldname as $row) { ?>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-left"><?php echo $row->sal_name; ?> </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" name="amount[<?php echo $row->salary_type_id; ?>]" onkeyup="summary_site()" class="form-control deducamount" id="dd_<?php echo $y; ?>">
+                                        </div>
+                                    </div>
+                                    <?php $y++; } ?>
+                                </td> 
+                            </tr>
+                            
+                        </table>
+                        <br/>
+                     
+                        <div class="form-group row">
+                            <label for="payable" class="col-sm-3 col-form-label text-center"><?php echo display('gross_salary') ?></label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="gross_salary" id="gross_salary" readonly="" value="100">
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <div class="form-group" style="margin-bottom:0%">
+                            <button type="submit" class="btn btn-success w-md m-b-5"><?php echo display('add') ?></button>
+                            <button type="reset" class="btn btn-warning w-md m-b-5"><?php echo display('reset') ?></button>
+                        </div>
+                    </div>
+                    <?php echo form_close() ?>
+                </div>  
+            </div>
+        </div>
+        
     </section>
 </div>
 <script src="<?php echo base_url() ?>my-assets/js/admin_js/payroll.js" type="text/javascript"></script>

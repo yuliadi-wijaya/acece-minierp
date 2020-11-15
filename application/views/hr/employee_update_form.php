@@ -385,6 +385,14 @@
                             <input name="zip" class="form-control" type="text" placeholder="<?php echo display('zip') ?>" id="zip" value="<?php echo html_escape($employee_data[0]['zip']);?>">
                         </div>
                  </div>
+
+                 <div class="form-group row">
+                            <label for="site_id" class="col-sm-2 col-form-div"><?php echo "Site Name" ?> <span class="text-danger"></span></label>
+                            <div class="col-sm-4">
+                                <?php echo form_dropdown('site_id', $site, null, 'class="form-control" id="site_id"') ?>
+                            </div>
+                        </div>
+
                 <?php echo form_close() ?>
                     </div>
                     <div class="panel-footer">

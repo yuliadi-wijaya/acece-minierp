@@ -55,13 +55,14 @@
                             <h4><?php echo html_escape($sub_title) ?></h4>
                         </div>
                     </div>
-                    <?php echo  form_open('Cpayroll/salary_setup_update/'. $data[0]['employee_id']) ?>
+                    <?php echo  form_open('Cpayroll/site_salary_setup_update/'. $data[0]['site_id']) ?>
                     <div class="panel-body">
                         <div class="form-group row">
-                            <label for="employee_id" class="col-sm-3 col-form-label"><?php echo display('employee_name') ?> <span class="text-danger">*</span></label>
+                            <label for="employee_id" class="col-sm-3 col-form-label"><?php echo "Site Name" ?> <span class="text-danger">*</span></label>
                             <div class="col-sm-5">
-                                <?php echo form_dropdown('employee_id',$employee,(!empty($data[0]['employee_id'])?$data[0]['employee_id']:null),'class="form-control" id="employee_id" onchange="employechange(this.value)"') ?>
+                                <?php echo form_dropdown('site_id',$site,(!empty($data[0]['site_id'])?$data[0]['site_id']:null),'class="form-control" id="site" disabled') ?>
                             </div>
+                            <input type="hidden" class="form-control" name="sal_type" id="site_id" value="<?php echo $data[0]['site_id']; ?>">
                         </div>
 
                         <div class="form-group row">
@@ -91,14 +92,14 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label text-left"><?php echo display('basic') ?></label>
                                         <div class="col-sm-9">
-                                            <input type="text" id="basic" name="basic" class="form-control" disabled="" value="<?php echo $EmpRate[0]['rate']; ?>">
+                                            <input type="text" id="basic" name="basic" class="form-control" value="<?php echo $site_info['hrate']; ?>">
                                         </div>
                                     </div>
                                     <?php $x = 0; foreach($amo as $value) { ?>
                                     <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label text-left"><?php echo $value->sal_name; ?></label>
+                                        <label class="col-sm-3 col-form-label text-left"><?php echo $value->sal_name; ?> </label>
                                         <div class="col-sm-9">
-                                            <input type="text" name="amount[<?php echo $value->salary_type_id; ?>]" class="form-control addamount" onkeyup="summary()" value="<?php echo $value->amount; ?>" id="add_<?php echo $x;?>">
+                                            <input type="text" name="amount[<?php echo $value->salary_type_id; ?>]" class="form-control addamount" onkeyup="summary_site()" value="<?php echo $value->amount; ?>" id="add_<?php echo $x;?>">
                                         </div>
                                     </div>
                                     <?php $x++; }?>
@@ -108,7 +109,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label text-left"><?php echo display('tax') ?></label>
                                         <div class="col-sm-6">
-                                            <input type="text" name="amount[]"  onkeyup="summary()"  class="form-control deducamount" id="taxinput" <?php if($EmpRate[0]['rate_type']==1){ echo 'readonly'; } ?>>
+                                            <input type="text" name="amount[]"  onkeyup="summary_site()"  class="form-control deducamount" id="taxinput" <?php if($EmpRate[0]['rate_type']==1){ echo 'readonly'; } ?>>
                                         </div>
                                         <div class="col-sm-3">
                                             <input type="checkbox" name="tax_manager" id="taxmanager" onchange='handletax(this);' value="1" <?php if($EmpRate[0]['rate_type']==1){ echo 'checked'.'  '.'disabled'; } ?>>Tax Manager
@@ -119,7 +120,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label text-left"><?php echo $row->sal_name; ?> </label>
                                         <div class="col-sm-9">
-                                           <input type="text" name="amount[<?php echo $row->salary_type_id; ?>]" onkeyup="summary()" class="form-control deducamount" value="<?php echo $row->amount ?>" id="dd_<?php echo $y;?>">
+                                           <input type="text" name="amount[<?php echo $row->salary_type_id; ?>]" onkeyup="summary_site()" class="form-control deducamount" value="<?php echo $row->amount ?>" id="dd_<?php echo $y;?>">
                                         </div>
                                     </div>
                                     <?php $y++; } ?>
@@ -132,7 +133,7 @@
                         <div class="form-group row">
                             <label for="payable" class="col-sm-3 col-form-label text-center"><?php echo display('gross_salary') ?></label>
                             <div class="col-sm-9"><?php foreach($amo as $basic){}?>   
-                                <input type="text" class="form-control" name="gross_salary" value="<?php echo $basic->gross_salary; ?>" id="grsalary" readonly="">
+                                <input type="text" class="form-control" name="gross_salary" value="<?php echo $basic->gross_salary; ?>" id="gross_salary" readonly="">
                             </div>
                         </div>
                         
