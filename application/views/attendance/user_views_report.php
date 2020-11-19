@@ -52,9 +52,9 @@
                         </div>
                     </div>
                     <div class="panel-body">
-                        <div class="row">
+                        <div class="table-responsive">
   
-                <table width="100%" class="datatable table table-striped table-bordered table-hover" style="
+                <table width="100%" class="datatable table table-striped table-bordered table-hover table-color-primary" style="
                      display: block;
                      overflow: scroll;
                      overflow-x: auto;
@@ -106,7 +106,7 @@
                                      ?>
                                      <td><?php echo $que[date_format($p,"Y-m-d")]->basic ? $que[date_format($p,"Y-m-d")]->basic : 0; ?></td>
                                     <?php  if ($p == $end) { ?>
-                                        <td><?php echo $sum_basic  ?></td>
+                                        <td class="text-right bg-success text-bold"><?php echo $sum_basic  ?></td>
                                         
                                         <?php }?> 
                                     <?php } ?> 
@@ -124,7 +124,7 @@
                                     ?>
                                     <td><?php echo $que[date_format($p,"Y-m-d")]->meal ? $que[date_format($p,"Y-m-d")]->meal : 0; ?></td>
                                    <?php  if ($p == $end) { ?>
-                                       <td><?php echo $sum_meal  ?></td>
+                                       <td class="text-right bg-success text-bold"><?php echo $sum_meal  ?></td>
                                        
                                        <?php }?> 
                                    <?php } ?> 
@@ -138,7 +138,7 @@
                                     ?>
                                     <td><?php echo $que[date_format($p,"Y-m-d")]->ot ? $que[date_format($p,"Y-m-d")]->ot : 0; ?></td>
                                    <?php  if ($p == $end) { ?>
-                                       <td><?php echo $sum_ot  ?></td>
+                                       <td class="text-right bg-success text-bold"><?php echo $sum_ot  ?></td>
                                        
                                        <?php }?> 
                                    <?php } ?> 
@@ -152,7 +152,7 @@
                                     ?>
                                     <td><?php echo $que[date_format($p,"Y-m-d")]->meal2 ? $que[date_format($p,"Y-m-d")]->meal2 : 0; ?></td>
                                    <?php  if ($p == $end) { ?>
-                                       <td><?php echo $sum_meal2  ?></td>
+                                       <td class="text-right bg-success text-bold"><?php echo $sum_meal2  ?></td>
                                        
                                        <?php }?> 
                                    <?php } ?> 

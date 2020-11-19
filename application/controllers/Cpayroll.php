@@ -10,6 +10,8 @@ class Cpayroll extends CI_Controller {
         $this->load->library('lpayroll');
         $this->load->library('numbertowords');
         $this->load->model('Site');
+        $this->load->library('table');
+
         $this->load->model('Payroll_model');
         $this->auth->check_admin_auth();
     }
@@ -479,6 +481,159 @@ class Cpayroll extends CI_Controller {
         $data['setting'] = $this->Payroll_model->setting();
         $data['company'] = $this->Payroll_model->companyinfo();
         $content = $this->parser->parse('payroll/salary_payslip', $data, true);
+        $this->template->full_admin_html_view($content);
+    }
+
+
+    public function salary_report() {
+        $start_date = $this->input->post('start_date', TRUE);
+        $end_date = $this->input->post('end_date', TRUE);
+        $name = $this->input->post('employee_name', TRUE);
+        $employee_rate = $this->db->select('*')->from('employee_salary_setup a')->join("salary_type b","b.salary_type_id = a.salary_type_id","inner")->get()->result();
+        $employee_rate_map = array();
+
+        foreach ($employee_rate as $r) {
+            $employee_rate_map[$r->employee_id][$r->sal_name] = $r;
+        }
+
+        $site_rate = $this->db->select('*')->from('site_salary_setup a')->join("salary_type b","b.salary_type_id = a.salary_type_id","inner")->get()->result();
+        $site_rate_map = array();
+
+        foreach ($site_rate as $r) {
+            $site_rate_map[$r->site_id][$r->sal_name] = $r;
+        }
+
+        $site_info = $this->db->select('*')->from('site_information')->get()->result();
+        $site_info_map = array();
+        foreach ($site_info as $r) {
+            $site_info_map[$r->site_id] = $r;
+        }
+
+        $site_workhour =  $this->db->select('*')->from('site_work_hour')->get()->result();
+        $site_workhour_map = array();
+
+        foreach ($site_workhour as $r) {
+            $site_workhour_map[$r->site_id][$r->day] = $r;
+        }
+
+        $attendance = $this->db->select('*')->from('attendance')->get()->result();
+        $attendance_map = array();
+
+        foreach ($attendance as $r) {
+            $attendance_map[$r->employee_id][$r->date] = $r;
+        }
+
+        $employee_map = array();
+        
+        if($name=="") {
+            $employee = $this->db->select('*')->from('employee_history')->get()->result();
+
+            foreach ($employee as $r) {
+                $employee_map[$r->id]= $r;
+            }
+        } else {
+            $employee = $this->db->select("*")->from('employee_history')->where("LOWER(CONCAT(first_name,' ',last_name)) = ",strtolower($name))->get()->result();
+
+            foreach ($employee as $r) {
+                $employee_map[$r->id]= $r;
+            }
+        }
+
+        $map_result= array();
+        foreach($employee_map as $employee_id => $employee_info) {
+            $basic_absence = 0;
+            $basic_total = 0;
+            $basic_meal = 0;
+            $meal_total = 0;
+            $ot_absence =0;
+            $ot_total = 0;
+            $ot_meal = 0;
+            $meal2_total = 0;
+
+            // In Case Employeer work in different site every day
+            if (is_array($attendance_map[$employee_id]) )
+            {
+                foreach ($attendance_map[$employee_id] as $att) {
+                
+                    $site_day_rate = $site_workhour_map[$att->site_id];
+                    $stay_time = $att->staytime;
+                    // Duration employee work in hour
+                    $stay_duration = floor(date('h',Strtotime(date('h:i', strtotime($stay_time)))));
+                    $day_work =  date('N',Strtotime(date('Y-m-d', strtotime($att->date))));
+                    $work_hour = $site_day_rate[$day_work];
+                    if ($work_hour) {
+                        $sign_in = date_create_from_format('h : i A',$work_hour->sign_in);
+                        $sign_out = date_create_from_format('h : i A',$work_hour->sign_out);
+                        $interval_work_hour = date_diff($sign_out,$sign_in)->h; 
+                        if ($interval_work_hour > 0) {
+                            if ($interval_work_hour <= $stay_duration) {
+                                $basic_absence += 1;
+                                $basic_meal += 1;
+                                $ot_absence += ($stay_duration - $interval_work_hour);
+                                // TODO meal 2 
+                                
+    
+                                // Calculate money 
+                                if ($employee_rate_map[$employee_id]) {
+                                    // Calculate From employee 
+                                    // Maybe next need to check hourly or daily
+                                    $basic_total += $employee_info->hrate;
+                                    $meal_total += $employee_rate_map[$employee_id]["Meal"]->amount;
+                                    $ot_total += ($ot_absence*$employee_rate_map[$employee_id]["Overtime"]->amount);
+                                    if($sign_out->h >= 10) {
+                                        $ot_meal += 1;
+                                        $meal2_total +=$employee_rate_map[$employee_id]["Meal 2"]->amount;
+                                    }
+                                   
+                                } else {
+                                    //Calculate From Site
+                                    $basic_total += $site_info_map[$att->site_id] ->hrate;
+                                    $meal_total += $site_rate_map[$att->site_id]["Meal"]->amount;
+                                    $ot_total += ($ot_absence*$site_rate_map[$att->site_id]["Overtime"]->amount);
+                                    if($sign_out->h >= 10) {
+                                        $ot_meal += 1;
+                                        $meal2_total +=$site_rate_map[$att->site_id]["Meal 2"]->amount;
+                                    }
+                                    
+    
+                                }
+            
+            
+                            }
+                        }
+                    }
+                    
+                    
+    
+                }
+            }
+            
+            $deduct = 0;
+            $gross = $basic_total + $meal_total + $ot_total + $meal2_total;
+
+            $map_result[$employee_id] = array(
+                "name" => $employee_info->first_name." ".$employee_info->last_name,
+                "basic_absence" => $basic_absence,
+                "basic_total" => $basic_total,
+                "meal_absence" => $basic_meal,
+                "meal_total" => $meal_total,
+                "ot_absence" => $ot_absence,
+                "ot_total"=>$ot_total,
+                "ot_meal" => $ot_meal,
+                "meal2_total"=>$meal2_total,
+                "gross" =>  $gross,
+                "deduct" => $deduct,
+                "total" =>  $gross - $deduct,
+            );
+        }
+        
+
+        
+
+        $data['res'] = $map_result;
+        $data['title'] = display('salary');
+        
+        $content = $this->parser->parse('payroll/salary', $data, true);
         $this->template->full_admin_html_view($content);
     }
 }

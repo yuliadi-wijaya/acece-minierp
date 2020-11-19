@@ -1105,6 +1105,13 @@
 								}?>"><a href="<?php echo base_url('Cpayroll/manage_site_salary_setup') ?>"><?php echo "Manage Site Salary Setup" ?></a></li>
 							<?php }?> 
 							<?php if($this->permission1->method('salary_generate','create')->access()){ ?>            
+							<li class="treeview <?php if ($this->uri->segment('2') == ("salary")){
+								echo "active";
+								} else {
+								echo " ";
+								}?>"><a href="<?php echo base_url('Cpayroll/salary_report') ?>"><?php echo "Salary" ?></a></li>
+							<?php }?> 
+							<?php if($this->permission1->method('salary_generate','create')->access()){ ?>            
 							<li class="treeview <?php if ($this->uri->segment('2') == ("salary_generate_form")){
 								echo "active";
 								} else {

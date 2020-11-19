@@ -249,8 +249,7 @@ class Cattendance extends CI_Controller {
            
 
         }
-        print_r($data['result']);
-        echo "</pre>";
+         
         // die();
         $content = $this->parser->parse('attendance/user_views_report', $data, true);
         $this->template->full_admin_html_view($content);
